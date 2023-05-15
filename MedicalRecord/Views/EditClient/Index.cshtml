@@ -1,0 +1,225 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Προσωπικά στοιχεία ασθενούς</title>
+	<style>
+		* {
+			box-sizing: border-box;
+			font-family: Arial, sans-serif;
+		}
+
+		body {
+			background-image: url('https://plus.unsplash.com/premium_photo-1658506952749-8df0057c5c03?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTl8fGhvc3BpdGFsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60');
+			background-size: cover;
+			background-position: center center;
+			font-family: 'Open Sans', sans-serif;
+		}
+
+		.container::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: -1;
+			background-image: url('https://plus.unsplash.com/premium_photo-1658506952749-8df0057c5c03?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTl8fGhvc3BpdGFsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60');
+			background-size: cover;
+			background-position: center center;
+			filter: blur(20px);
+		}
+		
+		form {
+			max-width: 500px;
+			margin: 0 auto;
+			padding: 20px;
+			background-color: #f2f2f2;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+		}
+
+		h2 {
+			text-align: center;
+			font-weight: bold;
+			color: #333;
+			margin-top: 50px;
+			background-image: url('https://images.unsplash.com/photo-1572541077501-c74b82f43b19');
+			background-size: cover;
+			background-position: center center;
+			padding: 30px;
+			border-radius: 10px;
+			box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+		}
+
+		label {
+			display: block;
+			font-weight: bold;
+			margin-top: 10px;
+		}
+
+		input[type="text"], select {
+			width: 100%;
+			padding: 12px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			resize: vertical;
+			font-size: 16px;
+			background-color: #fff;
+		}
+
+		input[type="submit"] {
+			background-color: #4CAF50;
+			color: #fff;
+			padding: 12px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 16px;
+		}
+
+			input[type="submit"]:hover {
+				background-color: #45a049;
+			}
+
+		.container {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		.col-25 {
+			flex: 25%;
+			max-width: 100%;
+		}
+
+		.col-50 {
+			flex: 50%;
+			max-width: 100%;
+		}
+
+		.col-75 {
+			flex: 75%;
+			max-width: 100%;
+		}
+
+
+		.col-25,
+		.col-50,
+		.col-75 {
+			padding: 0 20px;
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+	<h2>Προσωπικά στοιχεία ασθενούς</h2>
+	<div class="container">
+	</div>
+<form method="post" action="@Url.Action("Edit", "EditClients")">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <div class="form-group">
+        <label for="first_name">Όνομα:</label>
+        <input type="text" class="form-control" id="first_name" name="FirstName" value="@Model.FirstName" required>
+    </div>
+    <div class="form-group">
+        <label for="last_name">Επώνυμο:</label>
+        <input type="text" class="form-control" id="last_name" name="LastName" value="@Model.LastName" required>
+    </div>
+    <div class="form-group">
+        <label for="father_name">Πατρώνυμο:</label>
+        <input type="text" class="form-control" id="father_name" name="FathersName" value="@Model.FathersName" required>
+    </div>
+  <div class="form-group">
+    <label for="gender">Φύλο:</label>
+    <select class="form-control" id="gender" name="Gender" required>
+        @{
+            var maleSelected = Model.Gender == "male" ? "selected" : "";
+            var femaleSelected = Model.Gender == "female" ? "selected" : "";
+        }
+        <option value="male" selected="@maleSelected">Άνδρας</option>
+        <option value="female" selected="@femaleSelected">Γυναίκα</option>
+    </select>
+</div>
+		<div class="form-group">
+			<label for="birth_date">Ημερομηνία Γέννησης:</label>
+			<input type="date" class="form-control" id="birth_date" name="Dob" value="@Model.Dob" required>
+		</div>
+    <div class="form-group">
+        <label for="amka">Α.Μ.Κ.Α.:</label>
+        <input type="text" class="form-control" id="amka" name="Amka" value="@Model.Amka" required>
+    </div>
+    <div class="form-group">
+        <label for="work">Επάγγελμα:</label>
+        <input type="text" class="form-control" id="work" name="Job" value="@Model.Job" required>
+   <div class="form-group">
+    <label for="insurance_fund">Ταμείο:</label>
+    <select class="form-control" id="insurance_fund" name="Insurance" required>
+        @{
+            var iKASelected = Model.Insurance == "iKA" ? "selected" : "";
+            var oGASelected = Model.Insurance == "oGA" ? "selected" : "";
+            var tEBESelected = Model.Insurance == "tEBE" ? "selected" : "";
+            var oaEESelected = Model.Insurance == "oaEE" ? "selected" : "";
+            var oaEKSelected = Model.Insurance == "oaEK" ? "selected" : "";
+        }
+        <option value="iKA" selected="@iKASelected">Ι.Κ.Α.</option>
+        <option value="oGA" selected="@oGASelected">Ο.Γ.Α.</option>
+        <option value="tEBE" selected="@tEBESelected">Τ.Ε.Β.Ε.</option>
+        <option value="oaEE" selected="@oaEESelected">Ο.Α.Ε.Ε.</option>
+        <option value="oaEK" selected="@oaEKSelected">Ο.Α.Ε.Κ.</option>
+    </select>
+</div>
+<div class="form-group">
+    <label for="marital_status">Οικογενειακή Κατάσταση:</label>
+    <select class="form-control" id="marital_status" name="FamilyStatus" required>
+        @{
+            var singleSelected = Model.FamilyStatus == "single" ? "selected" : "";
+            var marriedSelected = Model.FamilyStatus == "married" ? "selected" : "";
+            var divorcedSelected = Model.FamilyStatus == "divorced" ? "selected" : "";
+            var widowedSelected = Model.FamilyStatus == "widowed" ? "selected" : "";
+        }
+					<option value="single" selected="@(singleSelected)">Άγαμος/η</option>
+					<option value="married" selected="@(marriedSelected)">Παντρεμένος/η</option>
+					<option value="divorced" selected="@(divorcedSelected)">Διαζευγμένος/η</option>
+					<option value="widowed" selected="@(widowedSelected)">Χήρος/α</option>
+    </select>
+</div>
+
+
+    <div class="form-group">
+        <label for="phone_number">Τηλέφωνο:</label>
+        <input type="text" class="form-control" id="phone_number" name="Phone" pattern="[0-9]{10}" value="@Model.Phone" required>
+    </div>
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" required>
+    </div>
+    <div class="form-group">
+        <label for="town">Περιοχή Κατοικίας:</label>
+        <input type="text" class="form-control" id="town" name="AreaOfResidence" value="@Model.AreaOfResidence" required>
+    </div>
+    <div class="form-group">
+        <label for="city">Πόλη Κατοικίας:</label>
+        <input type="text" class="form-control" id="city" name="CityOfResidence" value="@Model.CityOfResidence" required>
+    </div>
+    <div class="form-group">
+        <label for="address">Διεύθυνση Κατοικίας:</label>
+        <input type="text" class="form-control" id="address" name="AddressOfResidence" value="@Model.AddressOfResidence" required>
+    </div>
+    <div class="form-group">
+        <label for="zipcode">ΤΚ Κατοικίας:</label>
+        <input type="text" class="form-control" id="zipcode" name="ZipCodeOfResidence" value="@Model.ZipCodeOfResidence" required>
+    </div>
+    <div class="form-group text-center mt-4">
+        <button type="submit" class="btn btn-danger">Αποθήκευση</button>
+    </div>
+</form>
+
+
+</body>
+</html>

@@ -1,5 +1,19 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+    <style>
+    .navbar-nav .nav-link:hover {
+        color: #FFFFFF;
+        background-color: #D3D3D3;
+    }
+
+    .navbar-nav .nav-link {
+        transition: background-color 0.2s ease;
+    }
+
+    .navbar-nav .nav-item {
+        margin: 0 10px;
+    }
+</style>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,37 +24,53 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MedicalRecord</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+        <nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm">
+            <div class="container-fluid border">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <hr class="my-0" />
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 border-end">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="MainMenu" asp-action="Index" style="color: #000000; font-size: 20px; padding: 10px;">Αρχικό Μενού</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="CreateClient" asp-action="Index" style="color: #000000; font-size: 20px; padding: 10px;">Προσθήκη Ασθενούς</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="ShowClients" asp-action="Index" style="color: #000000; font-size: 20px; padding: 10px;">Προβολή Ασθενών</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="ShowDoctorsProfile" asp-action="Index" style="color: #000000; font-size: 20px; padding: 10px;">Προβολή Προφίλ</a>
+                    </li>
+                        
+                            <li>
+                                <a class="nav-link" style="color: #000000; font-size: 20px; padding: 10px;">Συνδεδεμένος Χρήστης: @ViewData["LoggedInDoctorFirstName"]</a>
+                            </li>
+                        
+
+
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Login" asp-action="Index" style="color: #000000; font-size: 20px;">Έξοδος</a>
                         </li>
                     </ul>
+
+
                 </div>
+                <hr class="my-0" />
             </div>
         </nav>
     </header>
+
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - MedicalRecord - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

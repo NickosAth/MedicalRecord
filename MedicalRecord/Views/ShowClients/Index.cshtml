@@ -1,0 +1,90 @@
+﻿@model List<Client>
+
+    
+<h2>Λίστα ασθενών</h2>
+<a href="/CreateClient/Index" class="btn btn-primary btn-sm">Νέος Ασθενής</a>
+<input type="text" name="FirstName" placeholder="Αναζήτηση Ασθενούς"/>
+<button class='btn btn-primary btn-sm' id="saveChangesForm">Αναζήτηση</button>
+
+
+<form method="post" action="/ShowClients">
+<table class="table" style="width: 100%">
+    <thead>
+        <tr>
+            <th>Κωδικός ασθενούς</th>
+            <th>Όνομα</th>
+            <th>Επώνυμο</th>
+            <th>Πατρώνυμο</th>
+            <th>Φύλο</th>
+            <th>Ημερομηνία Γέννησης</th>
+            <th>ΑΜΚΑ</th>
+            <th>Επάγγελμα</th>
+            <th>Ταμείο</th>
+            <th>Οικογενειακή Κατάσταση</th>
+            <th>Τηλέφωνο</th>
+            <th>Email</th>
+            <th>Περιοχή Κατοικίας</th>
+            <th>Πόλη Κατοικίας</th>
+            <th>Διεύθυνση Κατοικίας</th>
+            <th>ΤΚ Κατοικίας</th>
+            <th>Ενέργεια</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var client in Model)
+{
+    <tr>
+        <td>@client.Id</td>
+        <td><input type="text" name="FirstName" value="@client.FirstName" class="form-control" readonly /></td>
+        <td><input type="text" name="LastName" value="@client.LastName" class="form-control" readonly /></td>
+        <td><input type="text" name="FathersName" value="@client.FathersName" class="form-control" readonly /></td>
+        <td><input type="text" name="Gender" value="@client.Gender" class="form-control" readonly /></td>
+        <td><input type="text" name="Dob" value="@client.Dob.ToShortDateString()" class="form-control" readonly /></td>
+        <td><input type="text" name="Amka" value="@client.Amka" class="form-control" readonly /></td>
+        <td><input type="text" name="Job" value="@client.Job" class="form-control" readonly /></td>
+        <td><input type="text" name="Insurance" value="@client.Insurance" class="form-control" readonly /></td>
+        <td><input type="text" name="FamilyStatus" value="@client.FamilyStatus" class="form-control" readonly /></td>
+        <td><input type="text" name="Phone" value="@client.Phone" class="form-control" readonly /></td>
+        <td><input type="text" name="Email" value="@client.Email" class="form-control" readonly /></td>
+        <td><input type="text" name="ResidenceArea" value="@client.AreaOfResidence" class="form-control" readonly /></td>
+        <td><input type="text" name="ResidenceCity" value="@client.CityOfResidence" class="form-control" readonly /></td>
+        <td><input type="text" name="ResidenceAddress" value="@client.AddressOfResidence" class="form-control" readonly /></td>
+        <td><input type="text" name="ResidenceZipCode" value="@client.ZipCodeOfResidence" class="form-control" readonly /></td>
+        <td>
+            <a href="/EditClient/@client.Id" class="btn btn-primary btn-sm">Edit</a>
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm" onclick="deleteClient(@client.Id)">Διαγραφή</button>
+        </td>
+    </tr>
+}
+    </tbody>
+
+</table>
+</form>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("input").attr("readonly", true);
+            $("#editButton").click(function () {
+                $("input").attr("readonly", false);
+            });
+        });
+
+
+        $("#saveChangesForm").click(function () {
+            $("form").submit();
+        });
+
+        function deleteClient(clientId) {
+            $.ajax({
+                type: "POST",
+                url: "/ShowClients/Delete/" + clientId,
+                success: function () {
+                    // Reload the page after deleting the client
+                    location.reload();
+                }
+            });
+        }
+    </script>
+}

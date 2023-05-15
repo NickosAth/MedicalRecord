@@ -1,0 +1,98 @@
+﻿@{
+
+    ViewData["Title"] = "Home Page";
+
+	
+}
+
+@using Microsoft.AspNetCore.Http
+
+<head>
+	
+	<style>
+		body {
+			background-image: url('https://images.pexels.com/photos/4021775/pexels-photo-4021775.jpeg?auto=compress&cs=tinysrgb&w=1600');
+			background-size: cover;
+			background-position: center center;
+			font-family: 'Open Sans', sans-serif;
+		}
+
+		header {
+			display: none;
+		}
+
+		.container::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: -1;
+			background-image: url('https://images.pexels.com/photos/4021775/pexels-photo-4021775.jpeg?auto=compress&cs=tinysrgb&w=1600');
+			background-size: cover;
+			background-position: center center;
+			filter: blur(20px);
+		}
+
+		.card-header {
+			background-color: #dc3545;
+			color: #fff;
+			font-weight: bold;
+		}
+
+		.card {
+			position: relative;
+			z-index: 1;
+			margin-top: 50px;
+			border-radius: 10px;
+			box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+		}
+
+		.card-body {
+			padding: 30px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 offset-md-3">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="text-center">Ηλεκτρονικός Ιατρικός Φάκελος Ασθενούς</h3>
+						<h5 class="text-center mb-0">Είσοδος Ιατρού</h5>
+					</div>
+					<div class="card-body">
+						<form action="/Login/LoginPost" method="post">
+							<div class="form-group">
+								<label for="username">Όνομα χρήστη:</label>
+								<input type="text" class="form-control" id="username" name="Username" placeholder="Εισάγετε το όνομα χρήστη σας" required>
+							</div>
+							<div class="form-group">
+								<label for="password">Κωδικός:</label>
+								<input type="password" class="form-control" id="password" name="Password" placeholder="Εισάγετε τον κωδικό σας" required>
+							</div>
+							<div class="form-group text-center mt-4">
+								<button type="submit" class="btn btn-danger"><i class="fas fa-sign-in-alt mr-2"></i> Είσοδος</button>
+							</div>
+							@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+							{
+								<div class="alert alert-danger">
+									@ViewBag.ErrorMessage
+								</div>
+							}
+							@Html.ValidationSummary()
+						</form>
+						<hr>
+						<form action="@Url.Action("Index", "CreateDoctor")" method="get">
+							<div class="form-group text-center mt-4">
+								<button type="submit" class="btn btn-danger"><i class="fas fa-user-plus mr-2"></i> Εγγραφή Ιατρού</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
