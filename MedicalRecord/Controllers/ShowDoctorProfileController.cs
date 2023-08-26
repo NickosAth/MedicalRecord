@@ -1,20 +1,17 @@
 ﻿using MedicalRecord.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization; // Add this
 using System.Data.SqlClient;
-using System.Security.Claims; // Add this
 
 namespace MedicalRecord.Controllers
 {
-    public class DoctorProfileController : Controller
+    public class ShowDoctorProfileController : Controller
     {
         string connectionString = "Data Source=DESKTOP-M5LLFFV;Initial Catalog=WPF;Integrated Security=True";
 
-        [Authorize] // Restrict access to authenticated users
         public IActionResult Index()
         {
-            // Get the currently logged-in doctor's ID
-            string loggedInDoctorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Replace this with the logic to get the currently logged-in doctor's ID
+            int loggedInDoctorId = 1; // Example ID
 
             // Get the doctor's information using the logged-in doctor's ID
             Doctor doctor = GetDoctorById(loggedInDoctorId);
@@ -22,11 +19,8 @@ namespace MedicalRecord.Controllers
             return View(doctor);
         }
 
-        private Doctor GetDoctorById(string id)
-
+        private Doctor GetDoctorById(int id)
         {
-            string connectionString = "Data Source=DESKTOP-M5LLFFV;Initial Catalog=WPF;Integrated Security=True";
-
             // Logic to fetch doctor's information based on the provided ID
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

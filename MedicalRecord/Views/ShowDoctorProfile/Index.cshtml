@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Προφίλ Ιατρού</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #f8f8f8;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .container h2 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .container p {
+            margin: 10px 0;
+            color: #555;
+            font-size: 24px;
+            line-height: 1.6;
+        }
+
+        .back-button {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-button a {
+            text-decoration: none;
+            background-color: #17a2b8;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button a:hover {
+            background-color: #138496;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Προφίλ Ιατρού</h2>
+        <div class="profile-info">
+            <p><strong>Όνομα:</strong> @Model.FirstName</p>
+            <p><strong>Επώνυμο:</strong> @Model.LastName</p>
+            <p><strong>Όνομα Χρήστη:</strong> @Model.Username</p>
+            <p><strong>Φύλο:</strong> @Model.Gender</p>
+            <p><strong>Τηλέφωνο:</strong> @Model.Phone</p>
+            <p><strong>Email:</strong> @Model.Email</p>
+        </div>
+        <div class="back-button">
+            <a href="@Url.Action("Index", "MainMenu")">Επιστροφή στο Κύριο Μενού</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -11,7 +11,7 @@ namespace MedicalRecord.Controllers
 
         [HttpGet]
         [Route("ShowClients")]
-        public IActionResult ShowClients()
+        public IActionResult ShowClients(string searchString)
         {
             List<Client> clients = new List<Client>();
 
@@ -23,32 +23,46 @@ namespace MedicalRecord.Controllers
                 SqlCommand command = new SqlCommand(query, connection);
 
                 using (SqlDataReader reader = command.ExecuteReader())
+                {
                     while (reader.Read())
                     {
-                        Client client = new Client();
-
-                        client.Id = (int)reader["id"];
-                        client.FirstName = reader["firstName"].ToString();
-                        client.LastName = reader["lastName"].ToString();
-                        client.FathersName = reader["fathersName"].ToString();
-                        client.Gender = reader["gender"].ToString();
-                        client.Dob = (DateTime)reader["dob"];
-                        client.Amka = reader["amka"].ToString();
-                        client.Job = reader["job"].ToString();
-                        client.Insurance = reader["insurance"].ToString();
-                        client.FamilyStatus = reader["familyStatus"].ToString();
-                        client.Phone = reader["phone"].ToString();
-                        client.Email = reader["email"].ToString();
-                        client.AreaOfResidence = reader["areaOfResidence"].ToString();
-                        client.CityOfResidence = reader["cityOfResidence"].ToString();
-                        client.AddressOfResidence = reader["addressOfResidence"].ToString();
-                        client.ZipCodeOfResidence = reader["zipCodeOfResidence"].ToString();
+                        Client client = new Client
+                        {
+                            Id = (int)reader["id"],
+                            FirstName = reader["firstName"].ToString(),
+                            LastName = reader["lastName"].ToString(),
+                            FathersName = reader["fathersName"].ToString(),
+                            Gender = reader["gender"].ToString(),
+                            Dob = (DateTime)reader["dob"],
+                            Amka = reader["amka"].ToString(),
+                            Job = reader["job"].ToString(),
+                            Insurance = reader["insurance"].ToString(),
+                            FamilyStatus = reader["familyStatus"].ToString(),
+                            Phone = reader["phone"].ToString(),
+                            Email = reader["email"].ToString(),
+                            AreaOfResidence = reader["areaOfResidence"].ToString(),
+                            CityOfResidence = reader["cityOfResidence"].ToString(),
+                            AddressOfResidence = reader["addressOfResidence"].ToString(),
+                            ZipCodeOfResidence = reader["zipCodeOfResidence"].ToString()
+                        };
 
                         clients.Add(client);
                     }
+                }
             }
+
+            // Apply search filter if searchString is provided
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                clients = clients.Where(c =>
+                    c.FirstName.Contains(searchString) ||
+                    c.LastName.Contains(searchString) ||
+                    c.Amka.Contains(searchString)).ToList();
+            }
+
             return View("~/Views/ShowClients/Index.cshtml", clients);
         }
+
 
         [HttpGet]
         [Route("EditClient/{id}")]

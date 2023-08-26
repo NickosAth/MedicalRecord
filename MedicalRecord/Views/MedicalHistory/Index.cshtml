@@ -1,0 +1,23 @@
+﻿@model MedicalHistoryModel
+
+<h2>Ιστορικό Υγείας για τον πελάτη με Κωδικό ασθενούς: @Model.ClientId</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="VisitDate">Ημερομηνία Επίσκεψης</label>
+            <input asp-for="VisitDate" class="form-control" readonly />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Diagnosis">Διάγνωση</label>
+            <input asp-for="Diagnosis" class="form-control" readonly />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Treatment">Θεραπεία</label>
+            <textarea asp-for="Treatment" class="form-control" rows="4" readonly></textarea>
+        </div>
+    </div>
+</div>
+

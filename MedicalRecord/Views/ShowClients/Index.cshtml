@@ -1,80 +1,163 @@
 ﻿@model List<Client>
 
-    
-<h2>Λίστα ασθενών</h2>
-<a href="/CreateClient/Index" class="btn btn-primary btn-sm">Νέος Ασθενής</a>
-<input type="text" name="FirstName" placeholder="Αναζήτηση Ασθενούς"/>
-<button class='btn btn-primary btn-sm' id="saveChangesForm">Αναζήτηση</button>
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
 
+        h2 {
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+        }
 
-<form method="post" action="/ShowClients">
-<table class="table" style="width: 100%">
-    <thead>
-        <tr>
-            <th>Κωδικός ασθενούς</th>
-            <th>Όνομα</th>
-            <th>Επώνυμο</th>
-            <th>Πατρώνυμο</th>
-            <th>Φύλο</th>
-            <th>Ημερομηνία Γέννησης</th>
-            <th>ΑΜΚΑ</th>
-            <th>Επάγγελμα</th>
-            <th>Ταμείο</th>
-            <th>Οικογενειακή Κατάσταση</th>
-            <th>Τηλέφωνο</th>
-            <th>Email</th>
-            <th>Περιοχή Κατοικίας</th>
-            <th>Πόλη Κατοικίας</th>
-            <th>Διεύθυνση Κατοικίας</th>
-            <th>ΤΚ Κατοικίας</th>
-            <th>Ενέργεια</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var client in Model)
-{
-    <tr>
-        <td>@client.Id</td>
-        <td><input type="text" name="FirstName" value="@client.FirstName" class="form-control" readonly /></td>
-        <td><input type="text" name="LastName" value="@client.LastName" class="form-control" readonly /></td>
-        <td><input type="text" name="FathersName" value="@client.FathersName" class="form-control" readonly /></td>
-        <td><input type="text" name="Gender" value="@client.Gender" class="form-control" readonly /></td>
-        <td><input type="text" name="Dob" value="@client.Dob.ToShortDateString()" class="form-control" readonly /></td>
-        <td><input type="text" name="Amka" value="@client.Amka" class="form-control" readonly /></td>
-        <td><input type="text" name="Job" value="@client.Job" class="form-control" readonly /></td>
-        <td><input type="text" name="Insurance" value="@client.Insurance" class="form-control" readonly /></td>
-        <td><input type="text" name="FamilyStatus" value="@client.FamilyStatus" class="form-control" readonly /></td>
-        <td><input type="text" name="Phone" value="@client.Phone" class="form-control" readonly /></td>
-        <td><input type="text" name="Email" value="@client.Email" class="form-control" readonly /></td>
-        <td><input type="text" name="ResidenceArea" value="@client.AreaOfResidence" class="form-control" readonly /></td>
-        <td><input type="text" name="ResidenceCity" value="@client.CityOfResidence" class="form-control" readonly /></td>
-        <td><input type="text" name="ResidenceAddress" value="@client.AddressOfResidence" class="form-control" readonly /></td>
-        <td><input type="text" name="ResidenceZipCode" value="@client.ZipCodeOfResidence" class="form-control" readonly /></td>
-        <td>
-            <a href="/EditClient/@client.Id" class="btn btn-primary btn-sm">Edit</a>
-        </td>
-        <td>
-            <button type="button" class="btn btn-danger btn-sm" onclick="deleteClient(@client.Id)">Διαγραφή</button>
-        </td>
-    </tr>
-}
-    </tbody>
+        .container {
+            max-width: none;
+            margin: 0;
+            padding: 0;
+        }
 
-</table>
-</form>
-@section Scripts{
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-left: 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            color: #555;
+        }
+
+            th:last-child, td:last-child {
+                border-right: none;
+            }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .btn-container {
+            text-align: center;
+        }
+
+        .btn {
+            padding: 6px 0;
+            width: 100px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .search-input {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Λίστα Ασθενών</h2>
+        <input type="text" id="searchInput" class="search-input" placeholder="Αναζήτηση Ασθενούς" />
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Κωδικός Ασθενούς</th>
+                        <th>Όνομα</th>
+                        <th>Επώνυμο</th>
+                        <th>Πατρώνυμο</th>
+                        <th>Φύλο</th>
+                        <th>Ημερομηνία Γέννησης</th>
+                        <th>ΑΜΚΑ</th>
+                        <th>Επάγγελμα</th>
+                        <th>Ταμείο</th>
+                        <th>Οικογενειακή Κατάσταση</th>
+                        <th>Τηλέφωνο</th>
+                        <th>Email</th>
+                        <th>Περιοχή Κατοικίας</th>
+                        <th>Πόλη Κατοικίας</th>
+                        <th>Διεύθυνση Κατοικίας</th>
+                        <th>ΤΚ Κατοικίας</th>
+                        <th>Ενέργεια</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var client in Model)
+                    {
+                        <tr>
+                            <td>@client.Id</td>
+                            <td>@client.FirstName</td>
+                            <td>@client.LastName</td>
+                            <td>@client.FathersName</td>
+                            <td>@client.Gender</td>
+                            <td>@client.Dob.ToShortDateString()</td>
+                            <td>@client.Amka</td>
+                            <td>@client.Job</td>
+                            <td>@client.Insurance</td>
+                            <td>@client.FamilyStatus</td>
+                            <td>@client.Phone</td>
+                            <td>@client.Email</td>
+                            <td>@client.AreaOfResidence</td>
+                            <td>@client.CityOfResidence</td>
+                            <td>@client.AddressOfResidence</td>
+                            <td>@client.ZipCodeOfResidence</td>
+                            <td class="btn-container">
+                                <button class="btn btn-info" onclick="window.location.href='/MedicalHistory/@client.Id'">Ιστορικό Υγείας</button>
+                                <button class="btn btn-primary" onclick="window.location.href='/EditClient/@client.Id'">Επεξεργασία</button>
+                                <button class="btn btn-danger" onclick="confirmDelete('@client.Id')">Διαγραφή</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <script>
-        $(document).ready(function () {
-            $("input").attr("readonly", true);
-            $("#editButton").click(function () {
-                $("input").attr("readonly", false);
-            });
-        });
-
-
-        $("#saveChangesForm").click(function () {
-            $("form").submit();
-        });
+        function confirmDelete(clientId) {
+            if (confirm("Είστε σίγουρος ότι θέλετε να διαγράψετε τον ασθενή;")) {
+                deleteClient(clientId);
+            }
+        }
 
         function deleteClient(clientId) {
             $.ajax({
@@ -86,5 +169,23 @@
                 }
             });
         }
+
+        // Add search functionality
+        document.getElementById("searchInput").addEventListener("input", function () {
+            var searchInput = this.value.toLowerCase();
+            var rows = document.querySelectorAll("tbody tr");
+
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].querySelectorAll("td");
+                var idCell = cells[0].textContent.toLowerCase();
+                var firstNameCell = cells[1].textContent.toLowerCase();
+                var lastNameCell = cells[2].textContent.toLowerCase();
+
+                var matchFound = idCell.includes(searchInput) || firstNameCell.includes(searchInput) || lastNameCell.includes(searchInput);
+                rows[i].style.display = matchFound ? "table-row" : "none";
+            }
+        });
+    }
     </script>
-}
+</body>
+</html>
