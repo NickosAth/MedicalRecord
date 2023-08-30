@@ -141,7 +141,7 @@
                             <td>@client.AddressOfResidence</td>
                             <td>@client.ZipCodeOfResidence</td>
                             <td class="btn-container">
-                                <button class="btn btn-info" onclick="window.location.href='/MedicalHistory/@client.Id'">Ιστορικό Υγείας</button>
+                                <button class="btn btn-info" onclick="window.location.href='/MedicalHistory'">Ιστορικό Υγείας</button>
                                 <button class="btn btn-primary" onclick="window.location.href='/EditClient/@client.Id'">Επεξεργασία</button>
                                 <button class="btn btn-danger" onclick="confirmDelete('@client.Id')">Διαγραφή</button>
                             </td>
@@ -153,39 +153,51 @@
     </div>
 
     <script>
-        function confirmDelete(clientId) {
-            if (confirm("Είστε σίγουρος ότι θέλετε να διαγράψετε τον ασθενή;")) {
-                deleteClient(clientId);
-            }
-        }
-
-        function deleteClient(clientId) {
-            $.ajax({
-                type: "POST",
-                url: "/ShowClients/Delete/" + clientId,
-                success: function () {
-                    // Reload the page after deleting the client
-                    location.reload();
+        document.addEventListener("DOMContentLoaded", function () {
+            // Add your JavaScript code here
+            function confirmDelete(clientId) {
+                if (confirm("Είστε σίγουρος ότι θέλετε να διαγράψετε τον ασθενή;")) {
+                    deleteClient(clientId);
                 }
-            });
-        }
+            }
 
-        // Add search functionality
-        document.getElementById("searchInput").addEventListener("input", function () {
-            var searchInput = this.value.toLowerCase();
+            function deleteClient(clientId) {
+                $.ajax({
+                    type: "POST",
+                    url: "/ShowClients/Delete/" + clientId,
+                    success: function () {
+                        // Reload the page after deleting the client
+                        location.reload();
+                    }
+                });
+            }
+
+            var searchInput = document.getElementById("searchInput");
             var rows = document.querySelectorAll("tbody tr");
 
-            for (var i = 0; i < rows.length; i++) {
-                var cells = rows[i].querySelectorAll("td");
-                var idCell = cells[0].textContent.toLowerCase();
-                var firstNameCell = cells[1].textContent.toLowerCase();
-                var lastNameCell = cells[2].textContent.toLowerCase();
+            searchInput.addEventListener("input", function () {
+                var searchValue = this.value.toLowerCase();
 
-                var matchFound = idCell.includes(searchInput) || firstNameCell.includes(searchInput) || lastNameCell.includes(searchInput);
-                rows[i].style.display = matchFound ? "table-row" : "none";
-            }
+                for (var i = 0; i < rows.length; i++) {
+                    var cells = rows[i].querySelectorAll("td");
+                    var idCell = cells[0].textContent.toLowerCase();
+                    var firstNameCell = cells[1].textContent.toLowerCase();
+                    var lastNameCell = cells[2].textContent.toLowerCase();
+
+                    var matchFound = idCell.includes(searchValue) || firstNameCell.includes(searchValue) || lastNameCell.includes(searchValue);
+                    rows[i].style.display = matchFound ? "table-row" : "none";
+                }
+            });
+
+            var deleteButtons = document.querySelectorAll(".btn-danger");
+            deleteButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    var clientId = this.getAttribute("data-client-id");
+                    confirmDelete(clientId);
+                });
+            });
         });
-    }
     </script>
+    </div>
 </body>
 </html>

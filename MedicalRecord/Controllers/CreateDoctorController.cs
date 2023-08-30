@@ -35,11 +35,75 @@ namespace MedicalRecord.Controllers
                     command.ExecuteNonQuery();
 
                     // Add success message to ViewBag after doctor creation
-                    ViewBag.Message = "Doctor successfully created!";
+                    ViewBag.SuccessMessage = "Doctor successfully created!";
+                    return RedirectToAction("Index", "Login");
                 }
             }
 
             return RedirectToAction("Index", "Login");
-        } 
+        }
+        [HttpGet]
+        public JsonResult username(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return Json(new { exists = false }); // Return false if value is empty
+            }
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "SELECT COUNT(*) FROM doctors WHERE username = @Value";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Value", value);
+                    connection.Open();
+                    int count = (int)command.ExecuteScalar();
+                    return Json(new { exists = count > 0 });
+                }
+            }
+        }
+
+        [HttpGet]
+        public JsonResult phone(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return Json(new { exists = false }); // Return false if value is empty
+            }
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "SELECT COUNT(*) FROM doctors WHERE phone = @Value";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Value", value);
+                    connection.Open();
+                    int count = (int)command.ExecuteScalar();
+                    return Json(new { exists = count > 0 });
+                }
+            }
+        }
+
+        [HttpGet]
+        public JsonResult email(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return Json(new { exists = false }); // Return false if value is empty
+            }
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "SELECT COUNT(*) FROM doctors WHERE email = @Value";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Value", value);
+                    connection.Open();
+                    int count = (int)command.ExecuteScalar();
+                    return Json(new { exists = count > 0 });
+                }
+            }
+        }
+
     }
 }
