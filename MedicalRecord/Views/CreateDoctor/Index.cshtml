@@ -100,9 +100,8 @@
                                 </button>
                             </div>
                             <div id="success-message" class="alert alert-success" style="display: none;">
-                                Doctor successfully created!
+                                Doctor successfully created! Click OK to proceed to the login screen.
                             </div>
-
                             @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
                             {
                                 <div class="alert alert-danger">
@@ -185,9 +184,16 @@
                 $('#submitBtn').prop('disabled', hasEmptyFields || hasValidationMessage || invalidPhoneLength);
             }
 
+            $('#submitBtn').click(function () {
+                $('#success-message').show();
+            });
+
+            $('#success-message').click(function () {
+                window.location.href = '@Url.Action("Index", "Login")';
+            });
+
             updateValidationMessages();
             updateSubmitButtonState();
         });
     </script>
-
 </body>

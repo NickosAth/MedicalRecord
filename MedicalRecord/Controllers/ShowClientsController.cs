@@ -80,7 +80,9 @@ namespace MedicalRecord.Controllers
             return View("~/Views/EditClient/Index.cshtml", client);
         }
 
-        public ActionResult Delete(int id)
+        [HttpPost]
+        [Route("Delete")]
+        public IActionResult Delete(int id)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -94,7 +96,7 @@ namespace MedicalRecord.Controllers
                 }
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ShowClients");
         }
 
         private Client GetClientById(int id)

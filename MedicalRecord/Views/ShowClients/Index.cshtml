@@ -143,7 +143,7 @@
                             <td class="btn-container">
                                 <button class="btn btn-info" onclick="window.location.href='/MedicalHistory'">Ιστορικό Υγείας</button>
                                 <button class="btn btn-primary" onclick="window.location.href='/EditClient/@client.Id'">Επεξεργασία</button>
-                                <button class="btn btn-danger" onclick="confirmDelete('@client.Id')">Διαγραφή</button>
+                                <button class="btn btn-danger" data-client-id="@client.Id">Διαγραφή</button>
                             </td>
                         </tr>
                     }
@@ -151,6 +151,8 @@
             </table>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -164,10 +166,14 @@
             function deleteClient(clientId) {
                 $.ajax({
                     type: "POST",
-                    url: "/ShowClients/Delete/" + clientId,
+                    url: '@Url.Action("Delete", "ShowClients")',
+                    data: { id: clientId },
                     success: function () {
                         // Reload the page after deleting the client
                         location.reload();
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error deleting client:", textStatus, errorThrown);
                     }
                 });
             }
@@ -192,12 +198,11 @@
             var deleteButtons = document.querySelectorAll(".btn-danger");
             deleteButtons.forEach(function (button) {
                 button.addEventListener("click", function () {
-                    var clientId = this.getAttribute("data-client-id");
+                    var clientId = this.getAttribute("data-client-id"); // Get the client ID from the data attribute
                     confirmDelete(clientId);
                 });
             });
         });
     </script>
-    </div>
 </body>
 </html>

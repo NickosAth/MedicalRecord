@@ -5,7 +5,9 @@ using MedicalRecord.Models;
 namespace MedicalRecord.Controllers
 {
     public class LoginController : Controller
-    { 
+    {
+        private readonly string _connectionString = "Data Source=DESKTOP-M5LLFFV;Initial Catalog=WPF;Integrated Security=True";
+
         public IActionResult Index()
         {
             return View();
@@ -14,34 +16,41 @@ namespace MedicalRecord.Controllers
         [HttpPost]
         public IActionResult LoginPost(DoctorLogin doctorLogin)
         {
-            string connectionString = "Data Source=DESKTOP-M5LLFFV;Initial Catalog=WPF;Integrated Security=True";
-            // Connect to the database
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            int loggedInDoctorId = AuthenticateDoctor(doctorLogin);
+
+            if (loggedInDoctorId != -1)
+            {
+                TempData["LoggedInDoctorId"] = loggedInDoctorId;
+                return RedirectToAction("Index", "MainMenu");
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Λανθασμένα Στοιχεία Χρήστη!";
+                return View("Index", "Login");
+            }
+        }
+
+        private int AuthenticateDoctor(DoctorLogin doctorLogin)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                // Prepare the query
-                string query = "SELECT FirstName FROM doctors WHERE username=@Username AND password=@Password";
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Username", doctorLogin.Username);
-                command.Parameters.AddWithValue("@Password", doctorLogin.Password);
-
-                // Execute the query and check the result
-                string firstName = (string)command.ExecuteScalar();
-                if (firstName != null)
+                string query = "SELECT Id FROM doctors WHERE username=@Username AND password=@Password";
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    // Set the LoggedInDoctorFirstName value in the ViewData dictionary
-                    ViewData["LoggedInDoctorFirstName"] = firstName;
+                    command.Parameters.AddWithValue("@Username", doctorLogin.Username);
+                    command.Parameters.AddWithValue("@Password", doctorLogin.Password);
 
-                    return RedirectToAction("Index", "MainMenu");
-                }
-                else
-                {
-                    ViewBag.ErrorMessage = "Λανθασμένα Στοιχεία Χρήστη!";
-                    return View("Index", "Login");
+                    object result = command.ExecuteScalar();
+                    if (result != null)
+                    {
+                        return (int)result;
+                    }
                 }
             }
 
+            return -1; // Authentication failed
         }
     }
 }

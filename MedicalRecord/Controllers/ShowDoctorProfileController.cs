@@ -1,27 +1,41 @@
-﻿using MedicalRecord.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using MedicalRecord.Models;
 using System.Data.SqlClient;
 
 namespace MedicalRecord.Controllers
 {
     public class ShowDoctorProfileController : Controller
     {
-        string connectionString = "Data Source=DESKTOP-M5LLFFV;Initial Catalog=WPF;Integrated Security=True";
+        private readonly string connectionString = "Data Source=DESKTOP-M5LLFFV;Initial Catalog=WPF;Integrated Security=True";
 
         public IActionResult Index()
         {
-            // Replace this with the logic to get the currently logged-in doctor's ID
-            int loggedInDoctorId = 1; // Example ID
+            int loggedInDoctorId = GetLoggedInDoctorId();
 
-            // Get the doctor's information using the logged-in doctor's ID
-            Doctor doctor = GetDoctorById(loggedInDoctorId);
+            if (loggedInDoctorId != -1)
+            {
+                // Retrieve the doctor's information using the logged-in doctor's ID
+                Doctor doctor = GetDoctorById(loggedInDoctorId);
+                return View(doctor);
+            }
+            else
+            {
+                // Redirect to login page or show appropriate message
+                return RedirectToAction("Index", "Login");
+            }
+        }
 
-            return View(doctor);
+        private int GetLoggedInDoctorId()
+        {
+            if (TempData.TryGetValue("LoggedInDoctorId", out object doctorId))
+            {
+                return (int)doctorId;
+            }
+            return -1;
         }
 
         private Doctor GetDoctorById(int id)
         {
-            // Logic to fetch doctor's information based on the provided ID
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -43,7 +57,8 @@ namespace MedicalRecord.Controllers
                                 Password = reader["password"].ToString(),
                                 Gender = reader["gender"].ToString(),
                                 Phone = reader["phone"].ToString(),
-                                Email = reader["email"].ToString(),
+                                Email = reader["email"].ToString()
+                                // ... Add other properties here
                             };
 
                             return doctor;

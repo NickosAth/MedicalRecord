@@ -101,40 +101,29 @@
 </head>
 <body>
     <div class="container">
-        <h2>Create Medical History</h2>
+        <h2>Medical History</h2>
 
-        <div class="info-group">
-            <label>Client Information</label>
-            <div><span>First Name:</span> John</div>
-            <div><span>Last Name:</span> Doe</div>
-            <div><span>Phone Number:</span> 123-456-7890</div>
-        </div>
-
+        <!-- Display medical history information here -->
         <div class="form-group">
             <label for="vaccines">Vaccines:</label>
-            <textarea id="vaccines" rows="4" placeholder="Enter vaccines..."></textarea>
+            <textarea id="vaccines" rows="4" placeholder="Enter vaccines...">@Model.Vaccines</textarea>
         </div>
 
         <div class="form-group">
             <label for="diagnosis">Diagnosis:</label>
-            <textarea id="diagnosis" rows="4" placeholder="Enter diagnosis..."></textarea>
+            <textarea id="diagnosis" rows="4" placeholder="Enter diagnosis...">@Model.Diagnosis</textarea>
         </div>
 
         <div class="form-group">
             <label for="treatment">Treatment:</label>
-            <textarea id="treatment" rows="4" placeholder="Enter treatment..."></textarea>
+            <textarea id="treatment" rows="4" placeholder="Enter treatment...">@Model.Treatment</textarea>
         </div>
 
         <div class="form-group">
             <label>Visit Date/Time:</label>
             <div class="timestamp-container">
-                <input type="text" id="visitDateTime" readonly>
-                <button class="timestamp-btn" id="addTimestampBtn">Add Timestamp</button>
+                <input type="text" id="visitDateTime" readonly value="@Model.VisitDateTime">
             </div>
-        </div>
-
-        <div class="btn-container">
-            <button class="btn">Save Medical History</button>
         </div>
     </div>
 

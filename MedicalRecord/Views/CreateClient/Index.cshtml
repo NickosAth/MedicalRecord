@@ -115,6 +115,11 @@
 			padding: 0 20px;
 			margin-bottom: 10px;
 		}
+		 .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
 	</style>
 </head>
 <body>
@@ -204,4 +209,47 @@
 		</div>
 	</form>
 </body>
+<script>
+	$(document).ready(function () {
+		$('#amka').on('blur', function () {
+			validateField('Amka', $(this).val());
+		});
+
+		$('#phone_number').on('blur', function () {
+			validateField('Phone', $(this).val());
+		});
+
+		$('#email').on('blur', function () {
+			validateField('Email', $(this).val());
+		});
+
+		function validateField(fieldName, value) {
+			$.ajax({
+				url: '@Url.Action("Validate", "CreateClient")',
+				data: { field: fieldName, value: value },
+				success: function (response) {
+					var exists = response.exists;
+					var fieldId = fieldName.toLowerCase();
+					var errorMessageId = fieldId + '-error';
+
+					if (exists) {
+						$('#' + errorMessageId).remove();
+						$('#' + fieldId).after('<span id="' + errorMessageId + '" class="error-message">Value already exists</span>');
+					} else {
+						$('#' + errorMessageId).remove();
+					}
+				}
+			});
+		}
+
+		// Clear error messages when the user starts typing in the input fields
+		$('#amka, #phone_number, #email').on('input', function () {
+			var fieldName = $(this).attr('id');
+			var fieldId = fieldName.toLowerCase();
+			var errorMessageId = fieldId + '-error';
+			$('#' + errorMessageId).remove();
+		});
+	});
+</script>
+
 </html>

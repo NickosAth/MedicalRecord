@@ -34,14 +34,12 @@ namespace MedicalRecord.Controllers
                     connection.Open();
                     command.ExecuteNonQuery();
 
-                    // Add success message to ViewBag after doctor creation
-                    ViewBag.SuccessMessage = "Doctor successfully created!";
+                    TempData["DoctorCreatedMessage"] = "Doctor successfully created!";
                     return RedirectToAction("Index", "Login");
                 }
             }
-
-            return RedirectToAction("Index", "Login");
         }
+
         [HttpGet]
         public JsonResult username(string value)
         {
