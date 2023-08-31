@@ -2,29 +2,30 @@
 using System;
 using System.Data.SqlClient;
 using MedicalRecord.Models;
+using System.Data;
 
 namespace MedicalRecord.Controllers
 {
     public class MedicalHistoryController : Controller
     {
-        string connectionString = "Data Source=DESKTOP-M5LLFFV;Initial Catalog=WPF;Integrated Security=True";
+        private readonly string connectionString = "Data Source=DESKTOP-M5LLFFV;Initial Catalog=WPF;Integrated Security=True";
 
         public IActionResult Index(int clientId)
         {
-            MedicalHistoryModel medicalHistory = GetMedicalHistoryFromDatabase(clientId);
+            Client client = GetClientFromDatabase(clientId);
 
-            return View(medicalHistory);
+            return View(client);
         }
 
-        private MedicalHistoryModel GetMedicalHistoryFromDatabase(int clientId)
+        private Client GetClientFromDatabase(int clientId)
         {
-            MedicalHistoryModel medicalHistory = new MedicalHistoryModel();
+            Client client = new Client();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                string query = "SELECT Vaccines, Diagnosis, Treatment, VisitDateTime " +
+                string query = "SELECT firstName, lastName, vaccines, diagnosis, treatment, visitDatetime " +
                                "FROM clients " +
                                "WHERE id = @ClientId";
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -35,16 +36,55 @@ namespace MedicalRecord.Controllers
                     {
                         if (reader.Read())
                         {
-                            medicalHistory.Vaccines = reader["Vaccines"].ToString();
-                            medicalHistory.Diagnosis = reader["Diagnosis"].ToString();
-                            medicalHistory.Treatment = reader["Treatment"].ToString();
-                            medicalHistory.VisitDateTime = (DateTime)reader["VisitDateTime"];
+                            client.FirstName = reader["firstName"].ToString();
+                            client.LastName = reader["lastName"].ToString();
+                            client.Vaccines = reader["vaccines"].ToString();
+                            client.Diagnosis = reader["diagnosis"].ToString();
+                            client.Treatment = reader["treatment"].ToString();
+                            client.VisitDateTime = (DateTime)reader["visitDatetime"];
                         }
                     }
                 }
             }
 
-            return medicalHistory;
+            return client;
+        }
+        public IActionResult Edit(int clientId)
+        {
+            Client client = GetClientFromDatabase(clientId);
+            return View(client);
+        }
+
+        [HttpPost]
+        public IActionResult Update(Client updatedClient)
+        {
+            UpdateClientInDatabase(updatedClient);
+            return Json(new { success = true });
+        }
+
+        private void UpdateClientInDatabase(Client updatedClient)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "UPDATE clients " +
+                               "SET firstName = @FirstName, lastName = @LastName, " +
+                               "vaccines = @Vaccines, diagnosis = @Diagnosis, treatment = @Treatment " +
+                               "WHERE id = @ClientId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ClientId", updatedClient.Id);
+                    command.Parameters.AddWithValue("@FirstName", updatedClient.FirstName);
+                    command.Parameters.AddWithValue("@LastName", updatedClient.LastName);
+                    command.Parameters.AddWithValue("@Vaccines", updatedClient.Vaccines);
+                    command.Parameters.AddWithValue("@Diagnosis", updatedClient.Diagnosis);
+                    command.Parameters.AddWithValue("@Treatment", updatedClient.Treatment);
+
+                    command.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

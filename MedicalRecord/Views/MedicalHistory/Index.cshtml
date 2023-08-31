@@ -1,7 +1,11 @@
-﻿<!DOCTYPE html>
+﻿
+   
+
+@model Client
+
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Medical History</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,112 +42,128 @@
             color: #555;
         }
 
-            .info-group label {
-                margin-bottom: 5px;
-                display: block;
-            }
-
-            .info-group span {
-                font-weight: normal;
-                color: #777;
-            }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        input[type="text"],
-        textarea,
-        input[type="datetime-local"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        textarea {
-            resize: vertical;
-        }
-
         .btn-container {
             text-align: center;
+            margin-top: 20px;
         }
 
         .btn {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            padding: 6px 20px;
+            margin: 5px;
             cursor: pointer;
+            border: none;
+            border-radius: 3px;
+            font-size: 14px;
             transition: background-color 0.3s ease;
         }
 
-            .btn:hover {
-                background-color: #0056b3;
-            }
-
-        .timestamp-btn {
-            background-color: #17a2b8;
+        .btn-primary {
+            background-color: #007bff;
             color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            height: 48px; /* Adjust the height to match the field */
         }
 
-        .timestamp-container {
-            display: flex;
-            align-items: center;
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .edit-mode input {
+            display: inline-block;
+        }
+
+        .edit-mode span {
+            display: none;
         }
     </style>
+    <title>Client Medical History</title>
 </head>
 <body>
-    <div class="container">
-        <h2>Medical History</h2>
-
-        <!-- Display medical history information here -->
-        <div class="form-group">
-            <label for="vaccines">Vaccines:</label>
-            <textarea id="vaccines" rows="4" placeholder="Enter vaccines...">@Model.Vaccines</textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="diagnosis">Diagnosis:</label>
-            <textarea id="diagnosis" rows="4" placeholder="Enter diagnosis...">@Model.Diagnosis</textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="treatment">Treatment:</label>
-            <textarea id="treatment" rows="4" placeholder="Enter treatment...">@Model.Treatment</textarea>
-        </div>
-
-        <div class="form-group">
-            <label>Visit Date/Time:</label>
-            <div class="timestamp-container">
-                <input type="text" id="visitDateTime" readonly value="@Model.VisitDateTime">
-            </div>
-        </div>
+    <h2>Client Medical History</h2>
+    <div>
+        <label>First Name:</label>
+        <span>@Model.FirstName</span>
+        <input type="text" id="firstNameInput" value="@Model.FirstName" class="edit-mode" disabled />
+    </div>
+    <div>
+        <label>Last Name:</label>
+        <span>@Model.LastName</span>
+        <input type="text" id="lastNameInput" value="@Model.LastName" class="edit-mode" disabled />
+    </div>
+    <div>
+        <label>Vaccines:</label>
+        <span>@Model.Vaccines</span>
+        <input type="text" id="vaccinesInput" value="@Model.Vaccines" class="edit-mode" disabled />
+    </div>
+    <div>
+        <label>Diagnosis:</label>
+        <span>@Model.Diagnosis</span>
+        <input type="text" id="diagnosisInput" value="@Model.Diagnosis" class="edit-mode" disabled />
+    </div>
+    <div>
+        <label>Treatment:</label>
+        <span>@Model.Treatment</span>
+        <input type="text" id="treatmentInput" value="@Model.Treatment" class="edit-mode" disabled />
+    </div>
+    <div>
+        <label>Visit Date/Time:</label>
+        <span>@Model.VisitDateTime</span>
+        <input type="text" id="visitDateTimeInput" value="@Model.VisitDateTime.ToString("yyyy-MM-dd HH:mm:ss")" class="edit-mode" disabled />
+    </div>
+    <div class="btn-container">
+        <button class="btn btn-primary" id="editButton">Edit</button>
+        <button class="btn btn-success" id="saveButton" style="display:none;">Save</button>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        document.getElementById('addTimestampBtn').addEventListener('click', function () {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}`;
-            document.getElementById('visitDateTime').value = formattedDateTime;
+        $(document).ready(function () {
+            $("#editButton").click(function () {
+                $(".edit-mode").prop("disabled", false);
+                $("span").hide();
+                $("#editButton").hide();
+                $("#saveButton").show();
+            });
+
+            $("#saveButton").click(function () {
+                var updatedClient = {
+                    Id: @Model.Id,
+                    FirstName: $("#firstNameInput").val(),
+                    LastName: $("#lastNameInput").val(),
+                    Vaccines: $("#vaccinesInput").val(),
+                    Diagnosis: $("#diagnosisInput").val(),
+                    Treatment: $("#treatmentInput").val(),
+                    VisitDateTime: $("#visitDateTimeInput").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Update", "MedicalHistory")",
+                    data: updatedClient,
+                    success: function () {
+                        $(".edit-mode").prop("disabled", true);
+                        $("span").show();
+                        $("#editButton").show();
+                        $("#saveButton").hide();
+                        alert("Client information updated successfully.");
+
+                        // Reload the page to reflect the updated information
+                        location.reload();
+                    },
+                    error: function () {
+                        alert("Failed to update client information.");
+                    }
+                });
+            });
         });
     </script>
 </body>
 </html>
 
-
-
-
-
-
+       

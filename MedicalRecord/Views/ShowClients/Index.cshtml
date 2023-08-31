@@ -141,7 +141,7 @@
                             <td>@client.AddressOfResidence</td>
                             <td>@client.ZipCodeOfResidence</td>
                             <td class="btn-container">
-                                <button class="btn btn-info" onclick="window.location.href='/MedicalHistory'">Ιστορικό Υγείας</button>
+                                <button class="btn btn-info" onclick="redirectToMedicalHistory('@client.Id')">Ιστορικό Υγείας</button>
                                 <button class="btn btn-primary" onclick="window.location.href='/EditClient/@client.Id'">Επεξεργασία</button>
                                 <button class="btn btn-danger" data-client-id="@client.Id">Διαγραφή</button>
                             </td>
@@ -155,6 +155,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        function redirectToMedicalHistory(clientId) {
+            window.location.href = '/MedicalHistory/Index?clientId=' + clientId;
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             // Add your JavaScript code here
             function confirmDelete(clientId) {
