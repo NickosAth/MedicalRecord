@@ -1,7 +1,4 @@
-﻿
-   
-
-@model Client
+﻿@model MedicalRecord.Models.Client
 
 <!DOCTYPE html>
 <html>
@@ -85,40 +82,42 @@
     <title>Client Medical History</title>
 </head>
 <body>
-    <h2>Client Medical History</h2>
-    <div>
-        <label>First Name:</label>
-        <span>@Model.FirstName</span>
-        <input type="text" id="firstNameInput" value="@Model.FirstName" class="edit-mode" disabled />
-    </div>
-    <div>
-        <label>Last Name:</label>
-        <span>@Model.LastName</span>
-        <input type="text" id="lastNameInput" value="@Model.LastName" class="edit-mode" disabled />
-    </div>
-    <div>
-        <label>Vaccines:</label>
-        <span>@Model.Vaccines</span>
-        <input type="text" id="vaccinesInput" value="@Model.Vaccines" class="edit-mode" disabled />
-    </div>
-    <div>
-        <label>Diagnosis:</label>
-        <span>@Model.Diagnosis</span>
-        <input type="text" id="diagnosisInput" value="@Model.Diagnosis" class="edit-mode" disabled />
-    </div>
-    <div>
-        <label>Treatment:</label>
-        <span>@Model.Treatment</span>
-        <input type="text" id="treatmentInput" value="@Model.Treatment" class="edit-mode" disabled />
-    </div>
-    <div>
-        <label>Visit Date/Time:</label>
-        <span>@Model.VisitDateTime</span>
-        <input type="text" id="visitDateTimeInput" value="@Model.VisitDateTime.ToString("yyyy-MM-dd HH:mm:ss")" class="edit-mode" disabled />
-    </div>
-    <div class="btn-container">
-        <button class="btn btn-primary" id="editButton">Edit</button>
-        <button class="btn btn-success" id="saveButton" style="display:none;">Save</button>
+    <div class="container">
+        <h2>Client Medical History</h2>
+        <div class="info-group">
+            <label>First Name:</label>
+            <span>@Model.FirstName</span>
+            <input type="text" id="firstNameInput" value="@Model.FirstName" class="edit-mode" disabled />
+        </div>
+        <div class="info-group">
+            <label>Last Name:</label>
+            <span>@Model.LastName</span>
+            <input type="text" id="lastNameInput" value="@Model.LastName" class="edit-mode" disabled />
+        </div>
+        <div class="info-group">
+            <label>Vaccines:</label>
+            <span>@Model.Vaccines</span>
+            <input type="text" id="vaccinesInput" value="@Model.Vaccines" class="edit-mode" disabled />
+        </div>
+        <div class="info-group">
+            <label>Diagnosis:</label>
+            <span>@Model.Diagnosis</span>
+            <input type="text" id="diagnosisInput" value="@Model.Diagnosis" class="edit-mode" disabled />
+        </div>
+        <div class="info-group">
+            <label>Treatment:</label>
+            <span>@Model.Treatment</span>
+            <input type="text" id="treatmentInput" value="@Model.Treatment" class="edit-mode" disabled />
+        </div>
+        <div class="info-group">
+            <label>Visit Date/Time:</label>
+            <span>@Model.VisitDateTime</span>
+            <input type="text" id="visitDateTimeInput" value="@Model.VisitDateTime.ToString()" class="edit-mode" disabled />
+        </div>
+        <div class="btn-container">
+            <button class="btn btn-primary" id="editButton">Edit</button>
+            <button class="btn btn-success" id="saveButton" style="display:none;">Save</button>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -165,5 +164,3 @@
     </script>
 </body>
 </html>
-
-       
