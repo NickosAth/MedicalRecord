@@ -10,28 +10,48 @@ namespace MedicalRecord.Controllers
 
         public IActionResult Index()
         {
-            int loggedInDoctorId = GetLoggedInDoctorId();
+            // Authenticate the doctor by checking if they are logged in
+            int? loggedInDoctorId = GetLoggedInDoctorId();
 
-            if (loggedInDoctorId != -1)
+            if (loggedInDoctorId != null)
             {
                 // Retrieve the doctor's information using the logged-in doctor's ID
-                Doctor doctor = GetDoctorById(loggedInDoctorId);
-                return View(doctor);
+                Doctor doctor = GetDoctorById(loggedInDoctorId.Value);
+
+                if (doctor != null)
+                {
+                    return View(doctor);
+                }
+                else
+                {
+                    // Redirect to login page or show an appropriate message
+                    return RedirectToAction("Index", "Login");
+                }
             }
             else
             {
-                // Redirect to login page or show appropriate message
+                // Redirect to login page if the doctor is not logged in
                 return RedirectToAction("Index", "Login");
             }
         }
 
         private int GetLoggedInDoctorId()
         {
-            if (TempData.TryGetValue("LoggedInDoctorId", out object doctorId))
+            if (Request.Cookies.TryGetValue("LoggedInDoctorId", out string loggedInDoctorId))
             {
-                return (int)doctorId;
+                if (int.TryParse(loggedInDoctorId, out int doctorId))
+                {
+                    return doctorId;
+                }
             }
             return -1;
+        }
+
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("LoggedInDoctorId");
+            // Add any other logout logic you need.
+            return RedirectToAction("Index", "Login");
         }
 
         private Doctor GetDoctorById(int id)

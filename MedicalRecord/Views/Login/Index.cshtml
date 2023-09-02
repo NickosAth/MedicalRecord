@@ -78,11 +78,10 @@
 							</div>
 							@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
 							{
-								<div class="alert alert-danger">
-									@ViewBag.ErrorMessage
+								<div class="alert alert-danger mt-3">
+								@ViewBag.ErrorMessage
 								</div>
 							}
-							@Html.ValidationSummary()
 						</form>
 						<hr>
 						<form action="@Url.Action("Index", "CreateDoctor")" method="get">

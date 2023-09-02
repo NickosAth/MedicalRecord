@@ -4,11 +4,25 @@
 <html>
 <head>
     <style>
+        body::before {
+            content: "";
+            background-image: url('https://static.vecteezy.com/system/resources/previews/000/962/042/non_2x/thoughtful-doctor-holding-the-folder-photo.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            filter: blur(12px); /* Adjust the blur intensity as needed */
+            z-index: -1; /* Place it behind the content */
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
             margin: 0;
             padding: 0;
+            background: none; /* Remove the background from the body */
         }
 
         h2 {
@@ -31,7 +45,7 @@
             border-collapse: collapse;
             width: 100%;
             margin-left: 0;
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
             border: 1px solid #ddd;
             border-radius: 5px;
         }

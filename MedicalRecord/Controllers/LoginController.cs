@@ -20,7 +20,9 @@ namespace MedicalRecord.Controllers
 
             if (loggedInDoctorId != -1)
             {
-                TempData["LoggedInDoctorId"] = loggedInDoctorId;
+                // Set a cookie with the doctor's ID
+                Response.Cookies.Append("LoggedInDoctorId", loggedInDoctorId.ToString());
+
                 return RedirectToAction("Index", "MainMenu");
             }
             else
