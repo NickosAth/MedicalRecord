@@ -126,7 +126,7 @@
 	<h2>Προσωπικά στοιχεία ασθενούς</h2>
 	<div class="container">
 	</div>
-<form method="post" action="@Url.Action("Create", "CreateClient")">
+	<form id="patientForm" method="post" action="@Url.Action("Create", "CreateClient")">
 		<div class="form-group">
 			<label for="first_name">Όνομα:</label>
 			<input type="text" class="form-control" id="first_name" name="FirstName" required>
@@ -142,8 +142,8 @@
 		<div class="form-group">
 			<label for="gender">Φύλο:</label>
 			<select class="form-control" id="gender" name="Gender" required>
-				<option value="male">Άνδρας</option>
-				<option value="female">Γυναίκα</option>
+				<option value="Άνδρας">Άνδρας</option>
+				<option value="Γυναίκα">Γυναίκα</option>
 			</select>
 		</div>
 		<div class="form-group">
@@ -161,29 +161,26 @@
 		<div class="form-group">
 			<label for="insurance_fund">Ταμείο:</label>
 			<select class="form-control" id="insurance_fund" name="Insurance" required>
-				<option value="iKA">Ι.Κ.Α.</option>
-				<option value="oGA">Ο.Γ.Α.</option>
-				<option value="tEBE">Τ.Ε.Β.Ε.</option>
-				<option value="oaEE">Ο.Α.Ε.Ε.</option>
-				<option value="oaEK">Ο.Α.Ε.Κ.</option>
+				<option value="Ι.Κ.Α.">Ι.Κ.Α.</option>
+				<option value="Ο.Γ.Α.">Ο.Γ.Α.</option>
+				<option value="Τ.Ε.Β.Ε.">Τ.Ε.Β.Ε.</option>
+				<option value="Ο.Α.Ε.Ε.">Ο.Α.Ε.Ε.</option>
+				<option value="Ο.Α.Ε.Κ.">Ο.Α.Ε.Κ.</option>
 			</select>
 		</div>
 		<div class="form-group">
 			<label for="marital_status">Οικογενειακή Κατάσταση:</label>
 			<select class="form-control" id="marital_status" name="FamilyStatus" required>
-				<option value="single">Άγαμος/η</option>
-				<option value="married">Παντρεμένος/η</option>
-				<option value="divorced">Διαζευγμένος/η</option>
-				<option value="widowed">Χήρος/α</option>
+				<option value="Άγαμος/η">Άγαμος/η</option>
+				<option value="Παντρεμένος/η">Παντρεμένος/η</option>
+				<option value="Διαζευγμένος/η">Διαζευγμένος/η</option>
+				<option value="Χήρος/α">Χήρος/α</option>
 			</select>
 		</div>
 		<div class="form-group">
 			<label for="phone_number">Τηλέφωνο:</label>
 			<input type="text" class="form-control" id="phone_number" name="Phone" pattern="[0-9]{10}" required>
 		</div>
-
-
-
 		<div class="form-group">
 			<label for="email">Email:</label>
 			<input type="email" class="form-control" id="email" name="Email" required>
@@ -205,51 +202,110 @@
 			<input type="text" class="form-control" id="TK" name="ZipCodeOfResidence" required>
 		</div>
 		<div class="form-group text-center mt-4">
-			<button type="submit" class="btn btn-danger">Εγγραφή</button>
+			<button id="submitBtn" type="submit" class="btn btn-danger">Εγγραφή</button>
 		</div>
 	</form>
+	<!-- Success message element -->
+	<div id="success-message" style="display: none; text-align: center; color: green;">
+		Επιτυχής εγγραφή! Παρακαλώ περιμένετε...
+	</div>
+
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 	$(document).ready(function () {
-		$('#amka').on('blur', function () {
-			validateField('Amka', $(this).val());
-		});
+		var validationMessages = {};
+		var realTimeValidationMessages = {};
 
-		$('#phone_number').on('blur', function () {
-			validateField('Phone', $(this).val());
-		});
+		$('#username, #phone, #email').on('input', function () {
+			var inputId = $(this).attr('id');
+			var inputValue = $(this).val();
 
-		$('#email').on('blur', function () {
-			validateField('Email', $(this).val());
-		});
-
-		function validateField(fieldName, value) {
 			$.ajax({
-				url: '@Url.Action("Validate", "CreateClient")',
-				data: { field: fieldName, value: value },
-				success: function (response) {
-					var exists = response.exists;
-					var fieldId = fieldName.toLowerCase();
-					var errorMessageId = fieldId + '-error';
-
-					if (exists) {
-						$('#' + errorMessageId).remove();
-						$('#' + fieldId).after('<span id="' + errorMessageId + '" class="error-message">Value already exists</span>');
-					} else {
-						$('#' + errorMessageId).remove();
-					}
+				url: '/CreateClient/' + inputId, // Adjust the URL to match your route for client creation
+				type: 'GET',
+				data: { value: inputValue },
+				success: function (result) {
+					realTimeValidationMessages[inputId] = result.exists ? 'This ' + inputId + ' is already taken.' : '';
+					updateValidationMessages();
+					updateSubmitButtonState();
 				}
 			});
+		});
+
+		$('#phone').on('input', function () {
+			var phoneInput = $(this);
+			var phoneValue = phoneInput.val();
+			var validationMessage = $('#phone-validation-message');
+
+			var cleanPhoneValue = phoneValue.replace(/\D/g, '');
+			phoneInput.val(cleanPhoneValue);
+
+			if (cleanPhoneValue.length !== 10) {
+				realTimeValidationMessages['phone'] = 'Please enter a valid 10-digit phone number.';
+			} else {
+				realTimeValidationMessages['phone'] = ''; // Clear the message if we have 10 digits
+			}
+
+			updateValidationMessages();
+			updateSubmitButtonState();
+		});
+
+		$('input, select').on('input', function () {
+			var inputId = $(this).attr('id');
+			validationMessages[inputId] = '';
+			updateValidationMessages();
+			updateSubmitButtonState();
+		});
+
+		function updateValidationMessages() {
+			for (var inputId in validationMessages) {
+				var validationMessage = $('#' + inputId + '-validation-message');
+				validationMessage.text(validationMessages[inputId] || realTimeValidationMessages[inputId]);
+			}
 		}
 
-		// Clear error messages when the user starts typing in the input fields
-		$('#amka, #phone_number, #email').on('input', function () {
-			var fieldName = $(this).attr('id');
-			var fieldId = fieldName.toLowerCase();
-			var errorMessageId = fieldId + '-error';
-			$('#' + errorMessageId).remove();
+		function updateSubmitButtonState() {
+			var hasEmptyFields = $('input[required]').filter(function () {
+				return !$(this).val();
+			}).length > 0;
+
+			var hasValidationMessage = $('.text-danger').filter(function () {
+				return $(this).text() !== '';
+			}).length > 0;
+
+			var phoneValue = $('#phone').val();
+			var invalidPhoneLength = phoneValue.replace(/\D/g, '').length !== 10;
+
+			$('#submitBtn').prop('disabled', hasEmptyFields || hasValidationMessage || invalidPhoneLength);
+		}
+
+		$('#submitBtn').click(function (e) {
+			e.preventDefault(); // Prevent the default form submission
+
+			// Assuming your AJAX request to check input validity is correct
+
+			// Add the client to the database
+			$.ajax({
+				url: '/CreateClient/Create',
+				type: 'POST',
+				data: $('#patientForm').serialize(),
+				success: function (result) {
+					$('#success-message').show();
+
+					// Use setTimeout to delay the redirection
+					setTimeout(function () {
+						window.location.href = '@Url.Action("Index", "ShowClients")'; // Redirect after 3 seconds
+					}, 3000); // Wait for 3 seconds before redirecting
+				},
+				error: function () {
+					// Handle any errors if the client creation fails
+				}
+			});
 		});
+
+		updateValidationMessages();
+		updateSubmitButtonState();
 	});
 </script>
-
 </html>

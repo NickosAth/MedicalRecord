@@ -18,7 +18,7 @@ namespace MedicalRecord.Controllers
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open(); // Open the connection here
+                connection.Open();
 
                 string checkQuery = "SELECT COUNT(*) FROM clients WHERE amka = @Amka OR phone = @Phone OR email = @Email";
                 using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
@@ -35,8 +35,8 @@ namespace MedicalRecord.Controllers
                     }
                 }
 
-                string insertQuery = "INSERT INTO clients (firstName, lastName, fathersName, gender, dob, amka, job, insurance, familyStatus, phone, email, areaOfResidence, cityOfResidence, addressOfResidence, zipCodeOfResidence) " +
-                                    "VALUES (@FirstName, @LastName, @FatherName, @Gender, @Dob, @Amka, @Job, @Insurance, @FamilyStatus, @Phone, @Email, @AreaOfResidence, @CityOfResidence, @AddressOfResidence, @ZipCodeOfResidence)";
+                string insertQuery = "INSERT INTO clients (firstName, lastName, fathersName, gender, dob, amka, job, insurance, familyStatus, phone, email, areaOfResidence, cityOfResidence, addressOfResidence, zipCodeOfResidence, VisitDateTime) " +
+                                    "VALUES (@FirstName, @LastName, @FatherName, @Gender, @Dob, @Amka, @Job, @Insurance, @FamilyStatus, @Phone, @Email, @AreaOfResidence, @CityOfResidence, @AddressOfResidence, @ZipCodeOfResidence, GETDATE())";
                 using (SqlCommand command = new SqlCommand(insertQuery, connection))
                 {
                     command.Parameters.AddWithValue("@FirstName", client.FirstName);
@@ -58,9 +58,11 @@ namespace MedicalRecord.Controllers
                     command.ExecuteNonQuery();
                 }
 
-                // Close the connection when you're done
                 connection.Close();
             }
+
+            // Set a success message in TempData
+            TempData["SuccessMessage"] = "Client created successfully.";
 
             return RedirectToAction("Index", "ShowClients");
         }
@@ -70,7 +72,7 @@ namespace MedicalRecord.Controllers
         {
             if (string.IsNullOrEmpty(value))
             {
-                return Json(new { exists = false }); // Return false if value is empty
+                return Json(new { exists = false });
             }
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -91,7 +93,7 @@ namespace MedicalRecord.Controllers
         {
             if (string.IsNullOrEmpty(value))
             {
-                return Json(new { exists = false }); // Return false if value is empty
+                return Json(new { exists = false });
             }
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -112,7 +114,7 @@ namespace MedicalRecord.Controllers
         {
             if (string.IsNullOrEmpty(value))
             {
-                return Json(new { exists = false }); // Return false if value is empty
+                return Json(new { exists = false });
             }
 
             using (SqlConnection connection = new SqlConnection(connectionString))

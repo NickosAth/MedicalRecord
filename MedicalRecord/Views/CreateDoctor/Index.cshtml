@@ -1,7 +1,5 @@
-﻿@{
-    ViewData["Title"] = "Create Doctor";
-}
-
+﻿<!DOCTYPE html>
+<html>
 <head>
     <style>
         body {
@@ -48,7 +46,6 @@
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="row">
@@ -99,17 +96,12 @@
                                     <i class="fas fa-sign-in-alt mr-2"></i> Εγγραφή
                                 </button>
                             </div>
-                            <div id="success-message" class="alert alert-success" style="display: none;">
-                                Doctor successfully created! Click OK to proceed to the login screen.
-                            </div>
-                            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
-                            {
-                                <div class="alert alert-danger">
-                                    @ViewBag.ErrorMessage
-                                </div>
-                            }
-                            @Html.ValidationSummary()
+                            
                         </form>
+
+                        <div id="success-message" class="alert alert-success" style="display: none; margin: 10px 0;">
+                            Το προφίλ σας δημιουργήθηκε με επιτυχία.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -184,12 +176,27 @@
                 $('#submitBtn').prop('disabled', hasEmptyFields || hasValidationMessage || invalidPhoneLength);
             }
 
-            $('#submitBtn').click(function () {
-                $('#success-message').show();
-            });
+            $('#submitBtn').click(function (e) {
+                e.preventDefault(); // Prevent the default form submission
 
-            $('#success-message').click(function () {
-                window.location.href = '@Url.Action("Index", "Login")';
+                // Assuming your AJAX request to check input validity is correct
+
+                // Add the doctor to the database
+                $.ajax({
+                    url: '/CreateDoctor/Create',
+                    type: 'POST',
+                    data: $('form').serialize(),
+                    success: function (result) {
+                        $('#success-message').show();
+
+                        setTimeout(function () {
+                            window.location.href = '@Url.Action("Index", "Login")'; // Redirect after 3 seconds
+                        }, 3000);
+                    },
+                    error: function () {
+                        // Handle any errors if the doctor creation fails
+                    }
+                });
             });
 
             updateValidationMessages();
@@ -197,3 +204,4 @@
         });
     </script>
 </body>
+</html>

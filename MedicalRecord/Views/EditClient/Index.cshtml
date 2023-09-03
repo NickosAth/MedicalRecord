@@ -139,11 +139,11 @@
     <label for="gender">Φύλο:</label>
     <select class="form-control" id="gender" name="Gender" required>
         @{
-            var maleSelected = Model.Gender == "male" ? "selected" : "";
-            var femaleSelected = Model.Gender == "female" ? "selected" : "";
+					var maleSelected = Model.Gender == "Άνδρας" ? "selected" : "";
+					var femaleSelected = Model.Gender == "Γυναίκα" ? "selected" : "";
         }
-        <option value="male" selected="@maleSelected">Άνδρας</option>
-        <option value="female" selected="@femaleSelected">Γυναίκα</option>
+        <option value="Άνδρας" selected="@maleSelected">Άνδρας</option>
+				<option value="Γυναίκα" selected="@femaleSelected">Γυναίκα</option>
     </select>
 </div>
 		<div class="form-group">
@@ -162,32 +162,32 @@
     <label for="insurance_fund">Ταμείο:</label>
     <select class="form-control" id="insurance_fund" name="Insurance" required>
         @{
-            var iKASelected = Model.Insurance == "iKA" ? "selected" : "";
-            var oGASelected = Model.Insurance == "oGA" ? "selected" : "";
-            var tEBESelected = Model.Insurance == "tEBE" ? "selected" : "";
-            var oaEESelected = Model.Insurance == "oaEE" ? "selected" : "";
-            var oaEKSelected = Model.Insurance == "oaEK" ? "selected" : "";
+						var iKASelected = Model.Insurance == "Ι.Κ.Α." ? "selected" : "";
+						var oGASelected = Model.Insurance == "Ο.Γ.Α." ? "selected" : "";
+						var tEBESelected = Model.Insurance == "Τ.Ε.Β.Ε." ? "selected" : "";
+						var oaEESelected = Model.Insurance == "Ο.Α.Ε.Ε." ? "selected" : "";
+						var oaEKSelected = Model.Insurance == "Ο.Α.Ε.Κ." ? "selected" : "";
         }
-        <option value="iKA" selected="@iKASelected">Ι.Κ.Α.</option>
-        <option value="oGA" selected="@oGASelected">Ο.Γ.Α.</option>
-        <option value="tEBE" selected="@tEBESelected">Τ.Ε.Β.Ε.</option>
-        <option value="oaEE" selected="@oaEESelected">Ο.Α.Ε.Ε.</option>
-        <option value="oaEK" selected="@oaEKSelected">Ο.Α.Ε.Κ.</option>
+					<option value="Ι.Κ.Α." selected="@iKASelected">Ι.Κ.Α.</option>
+					<option value="Ο.Γ.Α." selected="@oGASelected">Ο.Γ.Α.</option>
+					<option value="Τ.Ε.Β.Ε." selected="@tEBESelected">Τ.Ε.Β.Ε.</option>
+					<option value="Ο.Α.Ε.Ε." selected="@oaEESelected">Ο.Α.Ε.Ε.</option>
+					<option value="Ο.Α.Ε.Κ.</" selected="@oaEKSelected">Ο.Α.Ε.Κ.</option>
     </select>
 </div>
 <div class="form-group">
     <label for="marital_status">Οικογενειακή Κατάσταση:</label>
     <select class="form-control" id="marital_status" name="FamilyStatus" required>
         @{
-            var singleSelected = Model.FamilyStatus == "single" ? "selected" : "";
-            var marriedSelected = Model.FamilyStatus == "married" ? "selected" : "";
-            var divorcedSelected = Model.FamilyStatus == "divorced" ? "selected" : "";
-            var widowedSelected = Model.FamilyStatus == "widowed" ? "selected" : "";
+						var singleSelected = Model.FamilyStatus == "Άγαμος/η" ? "selected" : "";
+						var marriedSelected = Model.FamilyStatus == "Παντρεμένος/η" ? "selected" : "";
+						var divorcedSelected = Model.FamilyStatus == "Διαζευγμένος/η" ? "selected" : "";
+						var widowedSelected = Model.FamilyStatus == "Χήρος/α" ? "selected" : "";
         }
-					<option value="single" selected="@(singleSelected)">Άγαμος/η</option>
-					<option value="married" selected="@(marriedSelected)">Παντρεμένος/η</option>
-					<option value="divorced" selected="@(divorcedSelected)">Διαζευγμένος/η</option>
-					<option value="widowed" selected="@(widowedSelected)">Χήρος/α</option>
+					<option value="Άγαμος/η" selected="@(singleSelected)">Άγαμος/η</option>
+					<option value="Παντρεμένος/η" selected="@(marriedSelected)">Παντρεμένος/η</option>
+					<option value="Διαζευγμένος/η" selected="@(divorcedSelected)">Διαζευγμένος/η</option>
+					<option value="Χήρος/α" selected="@(widowedSelected)">Χήρος/α</option>
     </select>
 </div>
 
