@@ -19,23 +19,58 @@ namespace MedicalRecord.Controllers
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string query = "INSERT INTO doctors (firstName, lastName, username, password, gender, phone, email) " +
-                               "VALUES (@FirstName, @LastName, @Username, @Password, @Gender, @Phone, @Email)";
-                using (SqlCommand command = new SqlCommand(query, connection))
+                string queryCheckEmail = "SELECT COUNT(*) FROM doctors WHERE email = @Email";
+
+                using (SqlCommand checkEmailCommand = new SqlCommand(queryCheckEmail, connection))
                 {
-                    command.Parameters.AddWithValue("@FirstName", doctor.FirstName);
-                    command.Parameters.AddWithValue("@LastName", doctor.LastName);
-                    command.Parameters.AddWithValue("@Username", doctor.Username);
-                    command.Parameters.AddWithValue("@Password", doctor.Password);
-                    command.Parameters.AddWithValue("@Gender", doctor.Gender);
-                    command.Parameters.AddWithValue("@Phone", doctor.Phone);
-                    command.Parameters.AddWithValue("@Email", doctor.Email);
+                    checkEmailCommand.Parameters.AddWithValue("@Email", doctor.Email);
 
                     connection.Open();
-                    command.ExecuteNonQuery();
+                    int emailCount = (int)checkEmailCommand.ExecuteScalar();
 
-                    TempData["DoctorCreatedMessage"] = "Doctor successfully created!";
-                    return RedirectToAction("Index", "Login");
+                    if (emailCount > 0)
+                    {
+                        // Email already exists, return an error message to the client
+                        TempData["DoctorCreatedMessage"] = "Email is already in use.";
+                        return RedirectToAction("Index", "Login");
+                    }
+                }
+
+                // Proceed with inserting the doctor into the database
+                string queryInsertDoctor = "INSERT INTO doctors (firstName, lastName, username, password, gender, phone, email) " +
+                                           "VALUES (@FirstName, @LastName, @Username, @Password, @Gender, @Phone, @Email)";
+
+                using (SqlCommand insertDoctorCommand = new SqlCommand(queryInsertDoctor, connection))
+                {
+                    insertDoctorCommand.Parameters.AddWithValue("@FirstName", doctor.FirstName);
+                    insertDoctorCommand.Parameters.AddWithValue("@LastName", doctor.LastName);
+                    insertDoctorCommand.Parameters.AddWithValue("@Username", doctor.Username);
+                    insertDoctorCommand.Parameters.AddWithValue("@Password", doctor.Password);
+                    insertDoctorCommand.Parameters.AddWithValue("@Gender", doctor.Gender);
+                    insertDoctorCommand.Parameters.AddWithValue("@Phone", doctor.Phone);
+                    insertDoctorCommand.Parameters.AddWithValue("@Email", doctor.Email);
+
+                    // Perform the insertion
+                    try
+                    {
+                        insertDoctorCommand.ExecuteNonQuery();
+                        TempData["DoctorCreatedMessage"] = "Doctor successfully created!";
+
+                        // Introduce a 3-second delay (for demonstration/debugging purposes)
+                        Thread.Sleep(3000); // Sleep for 3 seconds
+
+                        return RedirectToAction("Index", "Login");
+                    }
+                    catch (SqlException ex)
+                    {
+                        // Handle SQL exceptions, log them, or return an appropriate error message
+                        TempData["DoctorCreatedMessage"] = "An error occurred while creating the doctor.";
+
+                        // Introduce a 3-second delay (for demonstration/debugging purposes)
+                        Thread.Sleep(3000); // Sleep for 3 seconds
+
+                        return RedirectToAction("Index", "Login");
+                    }
                 }
             }
         }
@@ -102,6 +137,5 @@ namespace MedicalRecord.Controllers
                 }
             }
         }
-
     }
 }
