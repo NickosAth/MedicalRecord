@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <style>
         body::before {
             content: "";
@@ -14,8 +15,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            filter: blur(12px); /* Adjust the blur intensity as needed */
+            filter: blur(10px); /* Increased blur intensity */
             z-index: -1; /* Place it behind the content */
+            opacity: 0.4; /* Reduced opacity to make it less transparent */
         }
 
         body {
