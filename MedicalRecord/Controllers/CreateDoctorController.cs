@@ -31,7 +31,7 @@ namespace MedicalRecord.Controllers
                     if (emailCount > 0)
                     {
                         // Email already exists, return an error message to the client
-                        TempData["DoctorCreatedMessage"] = "Email is already in use.";
+                        TempData["DoctorCreatedMessage"] = "To Email χρησιμοποιείται ήδη!";
                         return RedirectToAction("Index", "Login");
                     }
                 }
@@ -54,7 +54,7 @@ namespace MedicalRecord.Controllers
                     try
                     {
                         insertDoctorCommand.ExecuteNonQuery();
-                        TempData["DoctorCreatedMessage"] = "Doctor successfully created!";
+                        TempData["DoctorCreatedMessage"] = "Το προφίλ ιατρού σας δημιουργήθηκε με επιτυχία!";
 
                         // Introduce a 3-second delay (for demonstration/debugging purposes)
                         Thread.Sleep(3000); // Sleep for 3 seconds
@@ -64,7 +64,7 @@ namespace MedicalRecord.Controllers
                     catch (SqlException ex)
                     {
                         // Handle SQL exceptions, log them, or return an appropriate error message
-                        TempData["DoctorCreatedMessage"] = "An error occurred while creating the doctor.";
+                        TempData["DoctorCreatedMessage"] = "Υπήρξε πρόβλημα κατά τη δημιουργία του ιατρού!";
 
                         // Introduce a 3-second delay (for demonstration/debugging purposes)
                         Thread.Sleep(3000); // Sleep for 3 seconds

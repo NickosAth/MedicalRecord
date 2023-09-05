@@ -121,10 +121,14 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Function to check if a string contains only Greek letters (no special characters)
-        function containsOnlyGreekLetters(input) {
-            const greekPattern = /^[Α-Ωα-ωίϊΐόάέύϋΰήώ]+$/;
-            return greekPattern.test(input);
+        function validateGreekInput(inputElement) {
+            var greekPattern = /^[Α-Ωα-ωίϊΐόάέύϋΰήώ\s]*$/;
+            var inputValue = inputElement.value;
+
+            if (!greekPattern.test(inputValue) && inputValue.trim() !== "") {
+                alert("Επιτρέπονται μόνο ελληνικοί χαρακτήρες σε αυτό το πεδίο.");
+                inputElement.value = inputValue.replace(/[^Α-Ωα-ωίϊΐόάέύϋΰήώ\s]/g, '');
+            }
         }
 
         $(document).ready(function () {
@@ -140,7 +144,7 @@
                     type: 'GET',
                     data: { value: inputValue },
                     success: function (result) {
-                        realTimeValidationMessages[inputId] = result.exists ? 'This ' + inputId + ' is already taken.' : '';
+                        realTimeValidationMessages[inputId] = result.exists ? 'Αυτό το ' + inputId + ' έχει ήδη καταχωρηθεί.' : '';
                         updateValidationMessages();
                         updateSubmitButtonState();
                     }
@@ -156,7 +160,7 @@
                 phoneInput.val(cleanPhoneValue);
 
                 if (cleanPhoneValue.length !== 10) {
-                    realTimeValidationMessages['phone'] = 'Please enter a valid 10-digit phone number.';
+                    realTimeValidationMessages['phone'] = 'Παρακαλώ εισάγετε έναν έγκυρο αριθμό τηλεφώνου με 10 ψηφία.';
                 } else {
                     $.ajax({
                         url: '/CreateDoctor/' + 'phone',
@@ -164,7 +168,7 @@
                         data: { value: cleanPhoneValue },
                         success: function (result) {
                             if (result.exists) {
-                                realTimeValidationMessages['phone'] = 'This phone number is already taken.';
+                                realTimeValidationMessages['phone'] = 'Αυτό το τηλέφωνο έχει ήδη καταχωρηθεί.';
                             } else {
                                 // Clear the message if it's not taken
                                 realTimeValidationMessages['phone'] = '';

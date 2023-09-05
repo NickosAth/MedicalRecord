@@ -32,6 +32,7 @@
 			background-size: cover;
 			background-position: center center;
 			filter: blur(20px);
+			background-attachment: fixed; /* Fixed background image */
 		}
 		
 		form {
@@ -129,15 +130,15 @@
 	<form id="patientForm" method="post" action="@Url.Action("Create", "CreateClient")">
 		<div class="form-group">
 			<label for="first_name">Όνομα:</label>
-			<input type="text" class="form-control" id="first_name" name="FirstName" required>
+			<input type="text" class="form-control" id="first_name" name="FirstName" required oninput="validateGreekInput(this)">
 		</div>
 		<div class="form-group">
 			<label for="last_name">Επώνυμο:</label>
-			<input type="text" class="form-control" id="last_name" name="LastName" required>
+			<input type="text" class="form-control" id="last_name" name="LastName" required oninput="validateGreekInput(this)">
 		</div>
 		<div class="form-group">
 			<label for="father_name">Πατρώνυμο:</label>
-			<input type="text" class="form-control" id="father_name" name="FathersName" required>
+			<input type="text" class="form-control" id="father_name" name="FathersName" required oninput="validateGreekInput(this)">
 		</div>
 		<div class="form-group">
 			<label for="gender">Φύλο:</label>
@@ -151,12 +152,13 @@
 			<input type="date" class="form-control" id="birth_date" name="Dob" required>
 		</div>
 		<div class="form-group">
-			<label for="amka">Α.Μ.Κ.Α.:</label>
+			<label for="amka">Α.Μ.Κ.Α. (11 αριθμοί):</label>
 			<input type="text" class="form-control" id="amka" name="Amka" required>
+			<div class="error-message" id="amka-error"></div>
 		</div>
 		<div class="form-group">
 			<label for="work">Επάγγελμα:</label>
-			<input type="text" class="form-control" id="work" name="Job" required>
+			<input type="text" class="form-control" id="work" name="Job" required oninput="validateGreekInput(this)">
 		</div>
 		<div class="form-group">
 			<label for="insurance_fund">Ταμείο:</label>
@@ -178,112 +180,243 @@
 			</select>
 		</div>
 		<div class="form-group">
-			<label for="phone_number">Τηλέφωνο:</label>
-			<input type="text" class="form-control" id="phone_number" name="Phone" pattern="[0-9]{10}" required>
+			<label for="phone_number">Τηλέφωνο (10 αριθμοί):</label>
+			<input type="text" class="form-control" id="phone_number" name="Phone" required>
+			<div class="error-message" id="phone_number-error"></div>
 		</div>
 		<div class="form-group">
 			<label for="email">Email:</label>
 			<input type="email" class="form-control" id="email" name="Email" required>
+			<div class="error-message" id="email-error"></div>
 		</div>
 		<div class="form-group">
-			<label for="town">Περιοχή Κατοικίας:</label>
-			<input type="text" class="form-control" id="username" name="AreaOfResidence" required>
+			<label for="area_of_residence">Περιοχή Κατοικίας:</label>
+			<input type="text" class="form-control" id="area_of_residence" name="AreaOfResidence" required oninput="validateGreekInput(this)">
 		</div>
 		<div class="form-group">
-			<label for="town">Πόλη Κατοικίας:</label>
-			<input type="text" class="form-control" id="username" name="CityOfResidence" required>
+			<label for="city_of_residence">Πόλη Κατοικίας:</label>
+			<input type="text" class="form-control" id="city_of_residence" name="CityOfResidence" required oninput="validateGreekInput(this)">
 		</div>
 		<div class="form-group">
-			<label for="address">Διεύθυνση Κατοικίας:</label>
-			<input type="text" class="form-control" id="address" name="AddressOfResidence" required>
+			<label for="address_of_residence">Διεύθυνση Κατοικίας:</label>
+			<input type="text" class="form-control" id="address_of_residence" name="AddressOfResidence" required oninput="validateGreekInput(this)">
 		</div>
 		<div class="form-group">
-			<label for="TK">ΤΚ Κατοικίας:</label>
-			<input type="text" class="form-control" id="TK" name="ZipCodeOfResidence" required>
-		</div>
+            <label for="zip_code">ΤΚ Κατοικίας (5 αριθμοί):</label>
+            <input type="text" class="form-control" id="zip_code" name="ZipCodeOfResidence" required>
+            <div class="error-message" id="zip_code-error"></div>
+        </div>
+		
+		@*submit button*@
 		<div class="form-group text-center mt-4">
-			<button id="submitBtn" type="submit" class="btn btn-danger">Εγγραφή</button>
+			<button id="submitBtn" type="submit" class="btn btn-danger" disabled>Εγγραφή</button>
 		</div>
 	</form>
-	<!-- Success message element -->
-	<div id="success-message" style="display: none; text-align: center; color: green;">
+		@*sucess message*@
+	<div id="success-message" style="display: none; text-align: center; color: black;">
 		Επιτυχής εγγραφή! Παρακαλώ περιμένετε...
 	</div>
 
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-	$(document).ready(function () {
-		var validationMessages = {};
-		var realTimeValidationMessages = {};
+    // Function to validate Greek input
+    function validateGreekInput(inputElement) {
+        var greekPattern = /^[Α-Ωα-ωίϊΐόάέύϋΰήώ\s]*$/;
+        var inputValue = inputElement.value;
 
-		$('#username, #phone, #email').on('input', function () {
-			var inputId = $(this).attr('id');
-			var inputValue = $(this).val();
+        if (!greekPattern.test(inputValue) && inputValue.trim() !== "") {
+            alert("Επιτρέπονται μόνο ελληνικοί χαρακτήρες σε αυτό το πεδίο.");
+            inputElement.value = inputValue.replace(/[^Α-Ωα-ωίϊΐόάέύϋΰήώ\s]/g, '');
+        }
+    }
 
-			$.ajax({
-				url: '/CreateClient/' + inputId, // Adjust the URL to match your route for client creation
-				type: 'GET',
-				data: { value: inputValue },
-				success: function (result) {
-					realTimeValidationMessages[inputId] = result.exists ? 'This ' + inputId + ' is already taken.' : '';
-					updateValidationMessages();
-					updateSubmitButtonState();
+	// Function to allow only numbers in the phone number input
+	function allowOnlyNumbers(inputElement) {
+		inputElement.value = inputElement.value.replace(/[^0-9]/g, '');
+	}
+
+	// Attach the allowOnlyNumbers function to the phone number input's oninput event
+	document.getElementById('phone_number').addEventListener('input', function () {
+		allowOnlyNumbers(this);
+	});
+
+    // Function to validate Zip Code
+    function validateZipCode(inputElement) {
+        var zipCodePattern = /^[0-9]{5}$/;
+        var inputValue = inputElement.value;
+
+        if (!zipCodePattern.test(inputValue)) {
+            document.getElementById("zip_code-error").textContent = "Ο ταχυδρομικός κώδικας πρέπει να έχει 5 αριθμούς.";
+        } else {
+            document.getElementById("zip_code-error").textContent = "";
+        }
+    }
+	// Function to validate AMKA
+	function validateAmka(inputElement) {
+		var amkaPattern = /^[0-9]{11}$/;
+		var inputValue = inputElement.value;
+
+		if (!amkaPattern.test(inputValue)) {
+			document.getElementById("amka-error").textContent = "Το Α.Μ.Κ.Α. πρέπει να έχει 11 αριθμούς.";
+		} else {
+			// Clear the error message when the input is valid
+			document.getElementById("amka-error").textContent = "";
+		}
+	}
+
+	// Function to validate Phone Number
+	function validatePhoneNumber(inputElement) {
+		var phonePattern = /^[0-9]{10}$/;
+		var inputValue = inputElement.value;
+
+		if (!phonePattern.test(inputValue)) {
+			document.getElementById("phone_number-error").textContent = "Το τηλέφωνο πρέπει να έχει 10 αριθμούς.";
+		} else {
+			// Clear the error message when the input is valid
+			document.getElementById("phone_number-error").textContent = "";
+		}
+	}
+
+	// Function to validate Email
+	function validateEmail(inputElement) {
+		var emailPattern = /^[a-zA-Z0-9._-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+		var inputValue = inputElement.value;
+
+		if (!emailPattern.test(inputValue)) {
+			document.getElementById("email-error").textContent = "Το email δεν είναι έγκυρο.";
+		} else {
+			// Clear the error message when the input is valid
+			document.getElementById("email-error").textContent = "";
+		}
+	}
+
+	// Function to check if all fields are valid and fulfilled before submitting the form
+	function isFormValid() {
+		var hasErrors = false;
+
+		// Check if any error messages are displayed
+		$('.error-message').each(function () {
+			if ($(this).text().trim() !== '') {
+				hasErrors = true;
+				return false; // Exit the loop early
+			}
+		});
+
+		// Check if any of the input fields are empty
+		$('input[type="text"], input[type="date"], select').each(function () {
+			if ($(this).val() === '') {
+				hasErrors = true;
+				return false; // Exit the loop early
+			}
+		});
+
+		// Check uniqueness of AMKA, Phone, and Email fields
+		var amkaValue = $('#amka').val();
+		var phoneValue = $('#phone_number').val();
+		var emailValue = $('#email').val();
+		var amkaCheckComplete = false;
+		var phoneCheckComplete = false;
+		var emailCheckComplete = false;
+
+		// Function to handle enabling the submit button when all checks are complete
+		function checkAllComplete() {
+			if (amkaCheckComplete && phoneCheckComplete && emailCheckComplete) {
+				updateRegisterButton();
+			}
+		}
+
+		$.ajax({
+			url: '/CreateClient/Amka',
+			type: 'GET',
+			data: { value: amkaValue },
+			async: true, // Make the request asynchronous
+			success: function (result) {
+				if (result.exists) {
+					$('#amka-error').text('Ο αριθμός AMKA υπάρχει ήδη.');
+					hasErrors = true;
 				}
-			});
-		});
-
-		$('#phone').on('input', function () {
-			var phoneInput = $(this);
-			var phoneValue = phoneInput.val();
-			var validationMessage = $('#phone-validation-message');
-
-			var cleanPhoneValue = phoneValue.replace(/\D/g, '');
-			phoneInput.val(cleanPhoneValue);
-
-			if (cleanPhoneValue.length !== 10) {
-				realTimeValidationMessages['phone'] = 'Please enter a valid 10-digit phone number.';
-			} else {
-				realTimeValidationMessages['phone'] = ''; // Clear the message if we have 10 digits
+				amkaCheckComplete = true;
+				checkAllComplete();
 			}
-
-			updateValidationMessages();
-			updateSubmitButtonState();
 		});
 
-		$('input, select').on('input', function () {
-			var inputId = $(this).attr('id');
-			validationMessages[inputId] = '';
-			updateValidationMessages();
-			updateSubmitButtonState();
-		});
-
-		function updateValidationMessages() {
-			for (var inputId in validationMessages) {
-				var validationMessage = $('#' + inputId + '-validation-message');
-				validationMessage.text(validationMessages[inputId] || realTimeValidationMessages[inputId]);
+		$.ajax({
+			url: '/CreateClient/Phone',
+			type: 'GET',
+			data: { value: phoneValue },
+			async: true, // Make the request asynchronous
+			success: function (result) {
+				if (result.exists) {
+					$('#phone_number-error').text('Ο αριθμός τηλεφώνου υπάρχει ήδη.');
+					hasErrors = true;
+				}
+				phoneCheckComplete = true;
+				checkAllComplete();
 			}
-		}
+		});
 
-		function updateSubmitButtonState() {
-			var hasEmptyFields = $('input[required]').filter(function () {
-				return !$(this).val();
-			}).length > 0;
+		$.ajax({
+			url: '/CreateClient/Email',
+			type: 'GET',
+			data: { value: emailValue },
+			async: true, // Make the request asynchronous
+			success: function (result) {
+				if (result.exists) {
+					$('#email-error').text('Το email υπάρχει ήδη.');
+					hasErrors = true;
+				}
+				emailCheckComplete = true;
+				checkAllComplete();
+			}
+		});
 
-			var hasValidationMessage = $('.text-danger').filter(function () {
-				return $(this).text() !== '';
-			}).length > 0;
+		return !hasErrors;
+	}
 
-			var phoneValue = $('#phone').val();
-			var invalidPhoneLength = phoneValue.replace(/\D/g, '').length !== 10;
+    // Function to enable/disable Register button based on form validity
+    function updateRegisterButton() {
+        if (isFormValid()) {
+            $('#submitBtn').prop('disabled', false);
+        } else {
+            $('#submitBtn').prop('disabled', true);
+        }
+    }
 
-			$('#submitBtn').prop('disabled', hasEmptyFields || hasValidationMessage || invalidPhoneLength);
-		}
+    // Attach the validation functions to the corresponding input elements
+    $('#zip_code').on('input', function () {
+        validateZipCode(this);
+        updateRegisterButton();
+    });
 
-		$('#submitBtn').click(function (e) {
-			e.preventDefault(); // Prevent the default form submission
+    $('#amka').on('input', function () {
+        validateAmka(this);
+        updateRegisterButton();
+    });
 
-			// Assuming your AJAX request to check input validity is correct
+    $('#phone_number').on('input', function () {
+        validatePhoneNumber(this);
+        updateRegisterButton();
+    });
+
+    $('#email').on('input', function () {
+        validateEmail(this);
+        updateRegisterButton();
+    });
+
+	// Function to hide the form and heading after successful registration
+	function hideFormAndHeading() {
+		$('#patientForm').hide();
+		$('h2').hide();
+	}
+
+	// Attach the form submission function to the Register button
+	$('#patientForm').submit(function (e) {
+		e.preventDefault(); // Prevent the default form submission
+
+		// Check if all fields are valid before submitting
+		if (isFormValid()) {
+			// Assuming your AJAX request to create a client is correct
 
 			// Add the client to the database
 			$.ajax({
@@ -292,6 +425,9 @@
 				data: $('#patientForm').serialize(),
 				success: function (result) {
 					$('#success-message').show();
+
+					// Hide the form and heading
+					hideFormAndHeading();
 
 					// Use setTimeout to delay the redirection
 					setTimeout(function () {
@@ -302,10 +438,12 @@
 					// Handle any errors if the client creation fails
 				}
 			});
-		});
-
-		updateValidationMessages();
-		updateSubmitButtonState();
+		}
 	});
+
+    // Initialize the Register button state
+    updateRegisterButton();
 </script>
+
+
 </html>

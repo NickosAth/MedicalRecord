@@ -12,7 +12,6 @@ namespace MedicalRecord.Controllers
         {
             return View(new Client());
         }
-
         [HttpPost]
         public ActionResult Create(Client client)
         {
@@ -30,8 +29,8 @@ namespace MedicalRecord.Controllers
                     int count = (int)checkCommand.ExecuteScalar();
                     if (count > 0)
                     {
-                        TempData["ClientExistsMessage"] = "Client with the provided AMKA, phone, or email already exists.";
-                        return View("Index", client);
+                        TempData["ClientExistsMessage"] = "Ασθενής με το παρεχόμενο ΑΜΚΑ, Τηλέφωνο ή Email υπάρχει ήδη!";
+                        return RedirectToAction("Index");
                     }
                 }
 
@@ -62,7 +61,7 @@ namespace MedicalRecord.Controllers
             }
 
             // Set a success message in TempData
-            TempData["SuccessMessage"] = "Client created successfully.";
+            TempData["SuccessMessage"] = "Ο ασθενής δημιουργήθηκε με επιτυχία";
 
             return RedirectToAction("Index", "ShowClients");
         }
