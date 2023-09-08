@@ -45,10 +45,15 @@
             padding: 30px;
         }
 
-        /* Style for the Font Awesome eye icon */
-        .input-group-text {
+        .eye-icon {
             cursor: pointer;
+            color: #333;
+            transition: color 0.3s; /* Add transition for color change */
         }
+
+            .eye-icon:hover {
+                color: red; /* Change color on hover */
+            }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -82,7 +87,7 @@
                                     <input type="password" class="form-control" id="password" name="password" required placeholder="Συμπληρώστε τον Κωδικό σας">
                                     <div class="input-group-append">
                                         <span class="input-group-text eye-icon" id="togglePassword" style="cursor: pointer; background-color: transparent; border: none;">
-                                            <i class="fas fa-eye" style="font-size: 20px; color: #333;"></i>
+                                            <i class="fas fa-eye" style="font-size: 20px;"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -121,16 +126,6 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function validateGreekInput(inputElement) {
-            var greekPattern = /^[Α-Ωα-ωίϊΐόάέύϋΰήώ\s]*$/;
-            var inputValue = inputElement.value;
-
-            if (!greekPattern.test(inputValue) && inputValue.trim() !== "") {
-                alert("Επιτρέπονται μόνο ελληνικοί χαρακτήρες σε αυτό το πεδίο.");
-                inputElement.value = inputValue.replace(/[^Α-Ωα-ωίϊΐόάέύϋΰήώ\s]/g, '');
-            }
-        }
-
         $(document).ready(function () {
             var validationMessages = {};
             var realTimeValidationMessages = {};
@@ -223,14 +218,14 @@
 
             $('#togglePassword').click(function () {
                 var passwordInput = $('#password');
-                var icon = $(this);
+                var icon = $('#togglePassword i');
 
                 if (passwordInput.attr('type') === 'password') {
                     passwordInput.attr('type', 'text');
-                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash'); // Toggle the eye icon without changing color
                 } else {
                     passwordInput.attr('type', 'password');
-                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye'); // Toggle the eye icon without changing color
                 }
             });
 
@@ -257,7 +252,5 @@
             updateSubmitButtonState();
         });
     </script>
-
-
 </body>
 </html>
