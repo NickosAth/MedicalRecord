@@ -25,3 +25,12 @@ app.MapControllerRoute(
     pattern: "{controller=Login}/{action=Index}/{id?}");
 
 app.Run();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "resetPassword",
+        pattern: "PasswordReset/ResetPassword/{token}",
+        defaults: new { controller = "Login", action = "ResetPassword" }
+    );
+});

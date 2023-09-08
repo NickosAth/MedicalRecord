@@ -1,123 +1,298 @@
 ﻿@{
-
-    ViewData["Title"] = "Home Page";
-
-	
+    ViewData["Title"] = "Είσοδος";
 }
 
 @using Microsoft.AspNetCore.Http
 
 <head>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-	
-	<style>
-		body {
-			background-image: url('https://images.pexels.com/photos/4021775/pexels-photo-4021775.jpeg?auto=compress&cs=tinysrgb&w=1600');
-			background-size: cover;
-			background-position: center center;
-			font-family: 'Open Sans', sans-serif;
-		}
+    <style>
+        body {
+            background-image: url('https://images.pexels.com/photos/4021775/pexels-photo-4021775.jpeg?auto=compress&cs=tinysrgb&w=1600');
+            background-size: cover;
+            background-position: center center;
+            font-family: 'Open Sans', sans-serif;
+        }
 
-		header {
-			display: none;
-		}
+        header {
+            display: none;
+        }
 
-		.container::before {
-			content: "";
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			z-index: -1;
-			background-image: url('https://images.pexels.com/photos/4021775/pexels-photo-4021775.jpeg?auto=compress&cs=tinysrgb&w=1600');
-			background-size: cover;
-			background-position: center center;
-			filter: blur(20px);
-		}
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background-image: url('https://images.pexels.com/photos/4021775/pexels-photo-4021775.jpeg?auto=compress&cs=tinysrgb&w=1600');
+            background-size: cover;
+            background-position: center center;
+            filter: blur(20px);
+        }
 
-		.card-header {
-			background-color: #dc3545;
-			color: #fff;
-			font-weight: bold;
-		}
+        .card-header {
+            background-color: #dc3545;
+            color: #fff;
+            font-weight: bold;
+        }
 
-		.card {
-			position: relative;
-			z-index: 1;
-			margin-top: 50px;
-			border-radius: 10px;
-			box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-		}
+        .card {
+            position: relative;
+            z-index: 1;
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
 
-		.card-body {
-			padding: 30px;
-		}
-	</style>
+        .card-body {
+            padding: 30px;
+        }
+
+        /* Additional styles for the reset password form */
+        #reset-password-form {
+            display: none;
+        }
+
+        /* Style the buttons */
+        .btn-red {
+            background-color: #dc3545;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px 20px;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+        }
+
+            .btn-red:hover {
+                background-color: #c82333;
+            }
+
+        /* Position the buttons */
+        .btn-left {
+            float: left;
+        }
+
+        .btn-right {
+            float: right;
+        }
+
+        /* Style for password fields */
+        .password-field {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Style for the "Forgot Password" link */
+        #forgot-password-link {
+            text-align: center;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+            color: #dc3545;
+            transition: color 0.2s;
+        }
+
+            #forgot-password-link:hover {
+                color: #c82333;
+            }
+
+        /* Style for form labels */
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Common style for eye icons */
+        .eye-icon {
+            height: 38px;
+            width: 38px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+            .eye-icon i {
+                font-size: 20px;
+                color: #333;
+            }
+
+            .eye-icon:hover i {
+                color: #dc3545;
+            }
+
+        /* Style for the success message */
+        .alert-success {
+            background-color: #28a745;
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
 </head>
-<body>
-	<div class="container">
-		<div class="row">
-			<div class="col-md-6 offset-md-3">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="text-center">Ηλεκτρονικός Ιατρικός Φάκελος Ασθενούς</h3>
-						<h5 class="text-center mb-0">Είσοδος Ιατρού</h5>
-					</div>
-					<div class="card-body">
-						<form action="/Login/LoginPost" method="post">
-							<div class="form-group">
-								<label for="username">Όνομα χρήστη:</label>
-								<input type="text" class="form-control" id="username" name="Username" placeholder="Εισάγετε το όνομα χρήστη σας" required>
-							</div>
-							<div class="form-group">
-								<label for="password">Κωδικός:</label>
-								<div class="input-group">
-									<input type="password" class="form-control" id="password" name="Password" placeholder="Εισάγετε τον κωδικό σας" required>
-									<div class="input-group-append">
-										<span class="input-group-text" style="height: 38px;">
-											<i class="fas fa-eye" id="togglePassword" style="cursor: pointer; line-height: 38px;"></i>
-										</span>
-									</div>
-								</div>
-							</div>
-							<div class="form-group text-center mt-4">
-								<button type="submit" class="btn btn-danger"><i class="fas fa-sign-in-alt mr-2"></i> Είσοδος</button>
-							</div>
-							@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
-							{
-								<div class="alert alert-danger mt-3">
-								@ViewBag.ErrorMessage
-								</div>
-							}
-						</form>
-						<hr>
-						<form action="@Url.Action("Index", "CreateDoctor")" method="get">
-							<div class="form-group text-center mt-4">
-								<button type="submit" class="btn btn-danger"><i class="fas fa-user-plus mr-2"></i> Εγγραφή Ιατρού</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script>
-		$(document).ready(function () {
-			$('#togglePassword').click(function () {
-				var passwordInput = $('#password');
-				var icon = $(this);
 
-				if (passwordInput.attr('type') === 'password') {
-					passwordInput.attr('type', 'text');
-					icon.removeClass('fa-eye').addClass('fa-eye-slash');
-				} else {
-					passwordInput.attr('type', 'password');
-					icon.removeClass('fa-eye-slash').addClass('fa-eye');
-				}
-			});
-		});
-	</script>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Ηλεκτρονικός Ιατρικός Φάκελος Ασθενούς</h3>
+                        <h5 class="text-center mb-0">Είσοδος Ιατρού</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Login Form -->
+                        <form id="login-form" action="/Login/LoginPost" method="post">
+                            <div class="form-group">
+                                <label for="username">Όνομα χρήστη:</label>
+                                <input type="text" class="form-control password-field" id="username" name="Username" placeholder="Εισάγετε το όνομα χρήστη σας" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Κωδικός:</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control password-field" id="password" name="Password" placeholder="Εισάγετε τον κωδικό σας" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text eye-icon" id="togglePassword" style="cursor: pointer;">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group text-center mt-4">
+                                <button type="submit" class="btn btn-red"><i class="fas fa-sign-in-alt mr-2"></i> Είσοδος</button>
+                            </div>
+                            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                            {
+                                <div class="alert alert-danger mt-3">
+                                    @ViewBag.ErrorMessage
+                                </div>
+                            }
+                        </form>
+
+                        <!-- Display success message if available -->
+                        <div class="alert alert-success mt-3" id="successMessage" style="display: none;">
+                            <!-- Success message content here -->
+                        </div>
+
+                        <!-- Forgot Password Form -->
+                        <form id="reset-password-form" action="/Login/ResetPassword" method="post">
+                            <div class="form-group">
+                                <label for="reset-email">Email:</label>
+                                <input type="email" class="form-control password-field" id="reset-email" name="Email" placeholder="Εισάγετε το email σας" required>
+                            </div>
+                            <div class="form-group text-center mt-4">
+                                <button type="submit" class="btn btn-red btn-right"><i class="fas fa-save mr-2"></i> Αποστολή</button>
+                                <button type="button" id="back-button" class="btn btn-red btn-left"><i class="fas fa-arrow-circle-left mr-2"></i> Πίσω</button>
+                            </div>
+                        </form>
+
+                        <!-- Display Error Message -->
+                        @if (!string.IsNullOrEmpty(ViewBag.ResetErrorMessage))
+                        {
+                            <div class="alert alert-danger mt-3">
+                                @ViewBag.ResetErrorMessage
+                            </div>
+                        }
+
+                        <hr>
+                        <form action="@Url.Action("Index", "CreateDoctor")" method="get">
+                            <div class="form-group text-center mt-4">
+                                <button type="submit" class="btn btn-red" id="create-doctor-button"><i class="fas fa-user-plus mr-2"></i> Εγγραφή Ιατρού</button>
+                            </div>
+                        </form>
+                        <p id="forgot-password-link" class="text-center mt-3" style="font-size: 16px; margin-top: 15px; cursor: pointer;">
+                            <i class="fas fa-question-circle fa-lg mr-1"></i> Ξέχασες τον κωδικό σου
+                        </p>
+
+                        <!-- Display success message if available -->
+                        @if (!string.IsNullOrEmpty(ViewBag.ResetSuccessMessage))
+                        {
+                            <div class="alert alert-success mt-3">
+                                @ViewBag.ResetSuccessMessage
+                            </div>
+                        }
+
+                        <!-- Display error message if available -->
+                        @if (!string.IsNullOrEmpty(ViewBag.ResetErrorMessage))
+                        {
+                            <div class="alert alert-danger mt-3">
+                                @ViewBag.ResetErrorMessage
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Toggle password visibility function
+            $('#togglePassword').click(function () {
+                togglePasswordVisibility('password', 'togglePassword');
+            });
+
+            // Toggle new password visibility function
+            $('#toggleNewPassword').click(function () {
+                togglePasswordVisibility('newPassword', 'toggleNewPassword');
+            });
+
+            // Toggle confirm password visibility function
+            $('#toggleConfirmPassword').click(function () {
+                togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword');
+            });
+
+            // Toggle the "Forgot Password" form
+            $('#forgot-password-link').click(function () {
+                $('#login-form').toggle();
+                $('#reset-password-form').toggle();
+                $('#create-doctor-form').toggle();
+                $('#create-doctor-button').toggle();
+                $('#forgot-password-link').hide();
+            });
+
+            // Toggle back to login form
+            $('#back-button').click(function () {
+                $('#reset-password-form').toggle();
+                $('#login-form').toggle();
+                $('#create-doctor-form').toggle();
+                $('#create-doctor-button').toggle();
+                $('#forgot-password-link').show();
+            });
+
+            // Function to toggle password visibility
+            function togglePasswordVisibility(inputId, toggleId) {
+                var passwordInput = $('#' + inputId);
+                var icon = $('#' + toggleId);
+
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            }
+
+            // Check for success message in the URL
+            var urlParams = new URLSearchParams(window.location.search);
+            var successMessage = urlParams.get("successMessage");
+
+            if (successMessage) {
+                // Display the success message
+                $("#successMessage").html(successMessage);
+                $("#successMessage").show();
+
+                // Hide the success message after 3 seconds
+                setTimeout(function () {
+                    $("#successMessage").fadeOut(1000); // Fade out over 1 second
+                }, 3000);
+            }
+        });
+    </script>
 </body>
