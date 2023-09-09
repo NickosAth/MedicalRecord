@@ -88,4 +88,7 @@ public partial class Client
 
     [Column("visitDateTime")]
     public DateTime VisitDateTime { get; set; }
+
+    public List<MedicalHistoryEntry> MedicalHistoryEntries { get; set; }
+
 }

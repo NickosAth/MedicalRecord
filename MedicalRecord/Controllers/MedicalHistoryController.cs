@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Data.SqlClient;
 using MedicalRecord.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 
 namespace MedicalRecord.Controllers
 {
@@ -12,6 +13,10 @@ namespace MedicalRecord.Controllers
         public IActionResult Index(int clientId)
         {
             Client client = GetClientFromDatabase(clientId);
+            List<MedicalHistoryEntry> medicalHistory = GetMedicalHistoryFromDatabase(clientId);
+
+            // Assign the retrieved medical history to the client
+            client.MedicalHistoryEntries = medicalHistory;
 
             return View(client);
         }
@@ -20,10 +25,10 @@ namespace MedicalRecord.Controllers
         {
             Client client = new Client();
 
+            // Retrieve client information from the database
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-
                 string query = "SELECT * FROM clients WHERE id = @ClientId";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -33,13 +38,11 @@ namespace MedicalRecord.Controllers
                     {
                         if (reader.Read())
                         {
+                            // Map client properties (e.g., FirstName, LastName, etc.)
                             client.Id = (int)reader["id"];
                             client.FirstName = reader["firstName"].ToString();
                             client.LastName = reader["lastName"].ToString();
-                            client.Vaccines = reader["vaccines"].ToString();
-                            client.Diagnosis = reader["diagnosis"].ToString();
-                            client.Treatment = reader["treatment"].ToString();
-                            client.VisitDateTime = (DateTime)reader["visitDateTime"];
+                            // Map other client properties here
                         }
                     }
                 }
@@ -48,35 +51,100 @@ namespace MedicalRecord.Controllers
             return client;
         }
 
-        [HttpPost]
-        public IActionResult Update(Client updatedClient)
+        private List<MedicalHistoryEntry> GetMedicalHistoryFromDatabase(int clientId)
         {
-            UpdateClientInDatabase(updatedClient); // Update the database record
-            return Json(new { success = true });   // Return a JSON response indicating success
+            List<MedicalHistoryEntry> medicalHistory = new List<MedicalHistoryEntry>();
+
+            // Retrieve medical history entries for the client from the database
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = "SELECT VisitDateTime, Vaccines, Diagnosis, Treatment " +
+                               "FROM medical_history " +
+                               "WHERE ClientId = @ClientId";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ClientId", clientId);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            MedicalHistoryEntry entry = new MedicalHistoryEntry
+                            {
+                                VisitDateTime = (DateTime)reader["VisitDateTime"],
+                                Vaccines = reader["Vaccines"].ToString(),
+                                Diagnosis = reader["Diagnosis"].ToString(),
+                                Treatment = reader["Treatment"].ToString()
+                            };
+                            medicalHistory.Add(entry);
+                        }
+                    }
+                }
+            }
+
+            return medicalHistory;
         }
 
-        private void UpdateClientInDatabase(Client updatedClient)
+        [HttpPost]
+        public IActionResult AddMedicalHistoryEntry(int clientId, MedicalHistoryEntry entry)
         {
+            // Add the new medical history entry to the database
+            AddMedicalHistoryEntryToDatabase(clientId, entry);
+
+            // Redirect back to the medical history page
+            return RedirectToAction("Index", new { clientId });
+        }
+
+        private void AddMedicalHistoryEntryToDatabase(int clientId, MedicalHistoryEntry entry)
+        {
+            // Insert the new medical history entry into the database
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                string query = "UPDATE clients " +
-                               "SET firstName = @FirstName, lastName = @LastName, vaccines = @Vaccines, diagnosis = @Diagnosis, treatment = @Treatment " +
-                               "WHERE id = @ClientId";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                string insertQuery = "INSERT INTO medical_history (ClientId, VisitDateTime, Vaccines, Diagnosis, Treatment) " +
+                                    "VALUES (@ClientId, @VisitDateTime, @Vaccines, @Diagnosis, @Treatment)";
+                using (SqlCommand command = new SqlCommand(insertQuery, connection))
                 {
-                    command.Parameters.AddWithValue("@ClientId", updatedClient.Id);
-                    command.Parameters.AddWithValue("@FirstName", updatedClient.FirstName);
-                    command.Parameters.AddWithValue("@LastName", updatedClient.LastName);
-                    command.Parameters.AddWithValue("@Vaccines", updatedClient.Vaccines);
-                    command.Parameters.AddWithValue("@Diagnosis", updatedClient.Diagnosis);
-                    command.Parameters.AddWithValue("@Treatment", updatedClient.Treatment);
+                    command.Parameters.AddWithValue("@ClientId", clientId);
+                    command.Parameters.AddWithValue("@VisitDateTime", entry.VisitDateTime);
+                    command.Parameters.AddWithValue("@Vaccines", entry.Vaccines);
+                    command.Parameters.AddWithValue("@Diagnosis", entry.Diagnosis);
+                    command.Parameters.AddWithValue("@Treatment", entry.Treatment);
 
                     command.ExecuteNonQuery();
                 }
             }
         }
+        [HttpPost]
+        public IActionResult DeleteMedicalHistoryEntry(int clientId, DateTime visitDateTime)
+        {
+            // Delete the medical history entry from the database
+            DeleteMedicalHistoryEntryFromDatabase(clientId, visitDateTime);
+
+            // Redirect back to the medical history page
+            return RedirectToAction("Index", new { clientId });
+        }
+
+        private void DeleteMedicalHistoryEntryFromDatabase(int clientId, DateTime visitDateTime)
+        {
+            // Delete the medical history entry from the database
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string deleteQuery = "DELETE FROM medical_history " +
+                                     "WHERE ClientId = @ClientId AND VisitDateTime = @VisitDateTime";
+                using (SqlCommand command = new SqlCommand(deleteQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@ClientId", clientId);
+                    command.Parameters.AddWithValue("@VisitDateTime", visitDateTime);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }

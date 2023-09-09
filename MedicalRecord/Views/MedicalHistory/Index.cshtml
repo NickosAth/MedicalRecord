@@ -1,179 +1,138 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url('https://www.verywellhealth.com/thmb/tX0Pw6GQ5kY_38PUlsJLd1w6KFk=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-85775470-568728a05f9b586a9e3eafb0.jpg'); /* Replace with your background image URL */
-            background-size: cover;
-            background-repeat: no-repeat;
-            margin: 0;
-            padding: 0;
-        }
+﻿@model MedicalRecord.Models.Client
 
-        .container.main-container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 8px;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-        }
+@{
+    ViewData["Title"] = "Ιατρικό Ιστορικό";
+}
+<style>
+    body {
+        background-image: url('https://www.verywellhealth.com/thmb/tX0Pw6GQ5kY_38PUlsJLd1w6KFk=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-85775470-568728a05f9b586a9e3eafb0.jpg');
+        background-size: cover;
+        background-blur: 5px;
+        background-attachment: fixed;
+    }
 
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9); /* Add some transparency to the background */
-            border-radius: 8px;
-        }
+    .container {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+    }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
+    h1 {
+        text-align: center;
+    }
 
-        label {
-            font-weight: bold;
-        }
+    /* Center elements within the container */
+    .center-content {
+        text-align: center;
+    }
 
-        .info-group {
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: rgba(248, 248, 248, 0.8); /* Add transparency to info boxes */
-            border-radius: 5px;
-            border: 1px solid #e0e0e0;
-            color: #555;
-        }
+    /* Add some spacing between elements */
+    .mt-4 {
+        margin-top: 20px;
+    }
 
-        .btn-container {
-            text-align: center;
-            margin-top: 20px;
-        }
+    /* Style the table */
+    table {
+        margin: 0 auto;
+    }
 
-        .btn {
-            padding: 6px 20px;
-            margin: 5px;
-            cursor: pointer;
-            border: none;
-            border-radius: 3px;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-        }
+    /* Style for the delete button */
+    .btn-delete {
+        background-color: #ff0000;
+        color: #fff;
+    }
 
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
+    /* Style for the "Add Entry" button */
+    .btn-add-entry {
+        background-color: #007bff;
+        color: #fff;
+        margin-top: 10px;
+    }
+</style>
+<h1 class="text-center">Ηλεκτρονικός Ιατρικός Φάκελος Ασθενούς</h1>
 
-        .btn-success {
-            background-color: #28a745;
-            color: white;
-        }
-
-        input {
-            width: 100%;
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .edit-mode input {
-            display: inline-block;
-        }
-
-        /* Add backdrop-filter to blur the background image */
-        .background-blur {
-            backdrop-filter: blur(10px); /* Adjust the blur amount as needed */
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-    </style>
-    <title>Client Medical History</title>
-</head>
-<body>
-    <div class="background-blur"></div>
-
-    <div class="container main-container">
-        <h2>Client Medical History</h2>
-        <div class="info-group">
-            <label for="firstNameInput">First Name:</label>
-            <input type="text" id="firstNameInput" value="@Model.FirstName" class="edit-mode" disabled />
-        </div>
-        <div class="info-group">
-            <label for="lastNameInput">Last Name:</label>
-            <input type="text" id="lastNameInput" value="@Model.LastName" class="edit-mode" disabled />
-        </div>
-        <div class="info-group">
-            <label for="vaccinesInput">Vaccines:</label>
-            <input type="text" id="vaccinesInput" value="@Model.Vaccines" class="edit-mode" disabled />
-        </div>
-        <div class="info-group">
-            <label for="diagnosisInput">Diagnosis:</label>
-            <input type="text" id="diagnosisInput" value="@Model.Diagnosis" class="edit-mode" disabled />
-        </div>
-        <div class="info-group">
-            <label for="treatmentInput">Treatment:</label>
-            <input type="text" id="treatmentInput" value="@Model.Treatment" class="edit-mode" disabled />
-        </div>
-        <div class="info-group">
-            <label for="visitDateTimeInput">Visit Date/Time:</label>
-            <input type="text" id="visitDateTimeInput" value="@Model.VisitDateTime.ToString()" class="edit-mode" disabled />
-        </div>
-        <div class="btn-container">
-            <button class="btn btn-primary" id="editButton">Edit</button>
-            <button class="btn btn-success" id="saveButton" style="display:none;">Save</button>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <h2 class="center-content">Πληροφορίες Ασθενούς</h2>
+            <table class="table">
+                <tr>
+                    <td><strong>Όνομα:</strong></td>
+                    <td>@Model.FirstName</td>
+                </tr>
+                <tr>
+                    <td><strong>Επώνυμο:</strong></td>
+                    <td>@Model.LastName</td>
+                </tr>
+            </table>
         </div>
     </div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $("#editButton").click(function () {
-                $(".edit-mode").prop("disabled", false);
-                $("#firstNameInput").prop("readonly", true); 
-                $("#lastNameInput").prop("readonly", true); 
-                $("#visitDateTimeInput").prop("readonly", true); 
-                $("#editButton").hide();
-                $("#saveButton").show();
-            });
+<div class="container mt-4 center-content">
+    <h2>Ιατρικό Ιστορικό</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ημερομηνία</th>
+                <th>Εμβόλια</th>
+                <th>Διάγνωση</th>
+                <th>Θεραπείες</th>
+                <th>Ενέργειες</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in Model.MedicalHistoryEntries)
+            {
+                <tr>
+                    <td>@entry.VisitDateTime.ToShortDateString()</td>
+                    <td>@entry.Vaccines</td>
+                    <td>@entry.Diagnosis</td>
+                    <td>@entry.Treatment</td>
+                    <td>
+                        <form asp-controller="MedicalHistory" asp-action="DeleteMedicalHistoryEntry" method="post">
+                            <input type="hidden" name="clientId" value="@Model.Id" />
+                            <input type="hidden" name="visitDateTime" value="@entry.VisitDateTime.ToString("yyyy-MM-dd")" />
+                            <button type="button" class="btn btn-delete" onclick="confirmDelete('@entry.VisitDateTime.ToString("yyyy-MM-dd")')">Διαγραφή</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-            $("#saveButton").click(function () {
-                var updatedClient = {
-                    Id: @Model.Id,
-                    FirstName: $("#firstNameInput").val(),
-                    LastName: $("#lastNameInput").val(),
-                    Vaccines: $("#vaccinesInput").val(),
-                    Diagnosis: $("#diagnosisInput").val(),
-                    Treatment: $("#treatmentInput").val(),
-                    VisitDateTime: $("#visitDateTimeInput").val()
-                };
 
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("Update", "MedicalHistory")",
-                    data: updatedClient,
-                    success: function () {
-                        $(".edit-mode").prop("disabled", true);
-                        $("#visitDateTimeInput").prop("readonly", false); // Remove read-only when leaving edit mode
-                        $("#editButton").show();
-                        $("#saveButton").hide();
-                        alert("Client information updated successfully.");
-
-                        // Reload the page to reflect the updated information
-                        location.reload();
-                    },
-                    error: function () {
-                        alert("Failed to update client information.");
-                    }
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+<div class="container mt-4 center-content">
+    <h2>Προσθήκη Νέας Ιατρικής Εγγραφής</h2>
+    <form asp-controller="MedicalHistory" asp-action="AddMedicalHistoryEntry" method="post">
+        <input type="hidden" name="clientId" value="@Model.Id" />
+        <div class="form-group">
+            <label for="visitDateTime">Ημερομηνία Επίσκεψης:</label>
+            <input type="date" name="entry.VisitDateTime" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="vaccines">Εμβόλια:</label>
+            <input type="text" name="entry.Vaccines" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="diagnosis">Διάγνωση:</label>
+            <input type="text" name="entry.Diagnosis" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="treatments">Θεραπείες:</label>
+            <input type="text" name="entry.Treatment" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-add-entry">Προσθήκη Εγγραφής</button>
+    </form>
+</div>
+<script>
+    function confirmDelete(visitDateTime) {
+        if (confirm("Είστε σίγουροι ότι θέλετε να διαγράψετε την εγγραφή για την ημερομηνία " + visitDateTime + ";\nΗ ενέργεια δεν μπορεί να ανακληθεί.")) {
+            // If user confirms, submit the form for deletion
+            document.forms[0].submit(); // You may need to adjust the form index if there are multiple forms on the page
+        }
+    }
+</script>
