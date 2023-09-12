@@ -129,12 +129,13 @@
 
         /* Style for the success message */
         .alert-success {
-            background-color: #28a745;
+            background-color: #dc3545; /* Red background color */
             color: #fff;
             font-weight: bold;
         }
     </style>
 </head>
+
 
 <body>
     <div class="container">
@@ -175,9 +176,12 @@
                         </form>
 
                         <!-- Display success message if available -->
-                        <div class="alert alert-success mt-3" id="successMessage" style="display: none;">
-                            <!-- Success message content here -->
-                        </div>
+                        @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+                        {
+                            <div class="alert alert-success mt-3" id="successMessage">
+                                @ViewBag.SuccessMessage
+                            </div>
+                        }
 
                         <!-- Forgot Password Form -->
                         <form id="reset-password-form" action="/Login/ResetPassword" method="post">
@@ -191,12 +195,32 @@
                             </div>
                         </form>
 
-                        <!-- Display Error Message -->
-                        @if (!string.IsNullOrEmpty(ViewBag.ResetErrorMessage))
+                        <!-- Display failure message if available -->
+                        @if (!string.IsNullOrEmpty(ViewBag.ResetFailureMessage))
                         {
-                            <div class="alert alert-danger mt-3">
-                                @ViewBag.ResetErrorMessage
+                            <div class="alert alert-success mt-3" id="resetFailureMessage">
+                                @ViewBag.ResetFailureMessage
                             </div>
+                            <script>
+                                // JavaScript to hide the success message after 5 seconds
+                                setTimeout(function () {
+                                    document.getElementById("resetFailureMessage").style.display = "none";
+                                }, 5000);
+                            </script>
+                        }
+
+                        <!-- Display success message if available -->
+                        @if (TempData.ContainsKey("ResetSuccessMessage"))
+                        {
+                            <div class="alert alert-success mt-3" id="resetSuccessMessage">
+                                @TempData["ResetSuccessMessage"]
+                            </div>
+                            <script>
+                                // JavaScript to hide the success message after 5 seconds
+                                setTimeout(function () {
+                                    document.getElementById("resetSuccessMessage").style.display = "none";
+                                }, 5000);
+                            </script>
                         }
 
                         <hr>
@@ -208,11 +232,10 @@
                         <p id="forgot-password-link" class="text-center mt-3" style="font-size: 16px; margin-top: 15px; cursor: pointer;">
                             <i class="fas fa-question-circle fa-lg mr-1"></i> Ξέχασες τον κωδικό σου
                         </p>
-
                         <!-- Display success message if available -->
                         @if (!string.IsNullOrEmpty(ViewBag.ResetSuccessMessage))
                         {
-                            <div class="alert alert-success mt-3">
+                            <div class="alert alert-success mt-3" id="resetSuccessMessage">
                                 @ViewBag.ResetSuccessMessage
                             </div>
                         }
@@ -229,6 +252,7 @@
             </div>
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {

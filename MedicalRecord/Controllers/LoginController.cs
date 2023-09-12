@@ -59,47 +59,6 @@ namespace MedicalRecord.Controllers
             return -1; // Authentication failed
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ResetPassword(DoctorPasswordResetRequest resetRequest)
-        {
-            // Check if the email exists in the database
-            if (EmailExistsInDatabase(resetRequest.Email))
-            {
-                // Generate a unique token (you can use a library like Guid)
-                string resetToken = Guid.NewGuid().ToString();
-
-                DateTime createdAt = DateTime.Now; // Get the current date and time
-                if (StoreResetTokenInDatabase(resetRequest.Email, resetToken, createdAt))
-                {
-                    // Send a password reset email to the user
-                    if (await SendPasswordResetEmailAsync(resetRequest.Email, resetToken))
-                    {
-                        ViewBag.ResetSuccessMessage = "Το email για επαναφορά του κωδικού στάλθηκε επιτυχώς."; // Success message in Greek
-
-                        // Delay for 3 seconds before redirecting to the login page
-                        await Task.Delay(3000);
-
-                        return RedirectToAction("Index"); // Redirect to the login page
-                    }
-                    else
-                    {
-                        ViewBag.ResetErrorMessage = "Σφάλμα κατά την αποστολή email. Παρακαλώ δοκιμάστε ξανά."; // Failure message in Greek
-                    }
-                }
-                else
-                {
-                    ViewBag.ResetErrorMessage = "Σφάλμα κατά την αποθήκευση του token."; // Failure message in Greek
-                }
-            }
-            else
-            {
-                ViewBag.ResetErrorMessage = "Το email δεν υπάρχει."; // Failure message in Greek
-            }
-
-            return RedirectToAction("Index");
-        }
-
-
         [HttpGet]
         public IActionResult PasswordReset(string email, string token)
         {
@@ -120,16 +79,17 @@ namespace MedicalRecord.Controllers
             TempData["ResetErrorMessage"] = "Λείπει το email ή το token.";
             return RedirectToAction("Index");
         }
+
         [HttpPost]
-        public IActionResult UpdatePassword(DoctorPasswordResetRequest updateRequest)
+        public IActionResult PasswordReset(DoctorPasswordResetRequest resetRequest)
         {
             // Verify the token and check if the new password matches the confirm password
-            if (VerifyResetToken(updateRequest.Email, updateRequest.Token) &&
-                updateRequest.NewPassword == updateRequest.ConfirmPassword)
+            if (VerifyResetToken(resetRequest.Email, resetRequest.Token) &&
+                resetRequest.NewPassword == resetRequest.ConfirmPassword)
             {
-                if (UpdateDoctorPassword(updateRequest.Email, updateRequest.NewPassword))
+                if (UpdateDoctorPassword(resetRequest.Email, resetRequest.NewPassword))
                 {
-                    ViewBag.ResetSuccessMessage = "Ο κωδικός αλλάχθηκε επιτυχώς."; // Success message
+                    TempData["ResetSuccessMessage"] = "Ο κωδικός αλλάχθηκε επιτυχώς."; // Success message
                     return RedirectToAction("Index"); // Redirect to a suitable page
                 }
                 else
@@ -143,11 +103,42 @@ namespace MedicalRecord.Controllers
             }
 
             // Redirect back to the "Set New Password" view with email and token
-            return RedirectToAction("PasswordReset", new { email = updateRequest.Email, token = updateRequest.Token });
+            return RedirectToAction("PasswordReset", new { email = resetRequest.Email, token = resetRequest.Token });
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(DoctorPasswordResetRequest resetRequest)
+        {
+            if (EmailExistsInDatabase(resetRequest.Email))
+            {
+                string resetToken = Guid.NewGuid().ToString();
 
+                DateTime createdAt = DateTime.Now;
+                if (StoreResetTokenInDatabase(resetRequest.Email, resetToken, createdAt))
+                {
+                    if (await SendPasswordResetEmailAsync(resetRequest.Email, resetToken))
+                    {
+                        TempData["ResetSuccessMessage"] = "Το email για επαναφορά του κωδικού στάλθηκε επιτυχώς.";
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        TempData["ResetFailureMessage"] = "Σφάλμα κατά την αποστολή email. Παρακαλώ δοκιμάστε ξανά.";
+                    }
+                }
+                else
+                {
+                    TempData["ResetFailureMessage"] = "Σφάλμα κατά την αποθήκευση του token.";
+                }
+            }
+            else
+            {
+                TempData["ResetFailureMessage"] = "Το email δεν υπάρχει.";
+            }
+
+            return RedirectToAction("Index");
+        }
 
 
         private bool EmailExistsInDatabase(string email)

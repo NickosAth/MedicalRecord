@@ -50,15 +50,18 @@ namespace MedicalRecord.Controllers
                     }
                 }
             }
-
             // Apply search filter if searchString is provided
             if (!string.IsNullOrEmpty(searchString))
             {
+                searchString = searchString.ToLower(); // Convert to lowercase for case-insensitive search
                 clients = clients.Where(c =>
-                    c.FirstName.Contains(searchString) ||
-                    c.LastName.Contains(searchString) ||
-                    c.Amka.Contains(searchString)).ToList();
+                    c.FirstName.ToLower().Contains(searchString) ||
+                    c.LastName.ToLower().Contains(searchString) ||
+                    c.Phone.ToLower().Contains(searchString) ||
+                    c.Amka.ToLower().Contains(searchString)
+                ).ToList();
             }
+
 
             return View("~/Views/ShowClients/Index.cshtml", clients);
         }

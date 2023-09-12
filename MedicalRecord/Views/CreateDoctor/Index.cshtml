@@ -116,7 +116,7 @@
                             </div>
                         </form>
 
-                        <div id="success-message" class="alert alert-success" style="display: none; margin: 10px 0;">
+                        <div id="success-message" class="alert alert-success" style="display: none; margin: 10px 0; color: red;">
                             Το προφίλ σας δημιουργήθηκε με επιτυχία.
                         </div>
                     </div>
@@ -178,16 +178,15 @@
                 updateSubmitButtonState();
             });
 
-            $('#firstName, #lastName').on('keyup', function () {
+            $('#firstName, #lastName').on('input', function () {
                 var inputValue = $(this).val();
+                var cleanedValue = inputValue.replace(/[^Α-Ωα-ωίϊΐόάέύϋΰήώ]+/g, ''); // Remove non-Greek characters
 
-                if (!containsOnlyGreekLetters(inputValue)) {
-                    // Display a popup message when special characters or English characters are entered
+                if (inputValue !== cleanedValue) {
                     alert('Επιτρέπονται μόνο ελληνικοί χαρακτήρες');
-                    // Remove the non-Greek characters and special characters from the input value
-                    inputValue = inputValue.replace(/[^Α-Ωα-ωίϊΐόάέύϋΰήώ]+/g, '');
-                    $(this).val(inputValue); // Update the input value
                 }
+
+                $(this).val(cleanedValue); // Update the input value
             });
 
             $('input, select').on('input', function () {

@@ -149,7 +149,7 @@
         </div>
         <div class="form-group">
             <label for="amka">Α.Μ.Κ.Α.:</label>
-            <input type="text" class="form-control" id="amka" name="Amka" value="@Model.Amka" required>
+            <input type="text" class="form-control" id="amka" name="Amka" value="@Model.Amka" readonly>
         </div>
         <div class="form-group">
     <label for="job">Επάγγελμα:</label>
@@ -175,14 +175,14 @@
             </select>
         </div>
 
-            <div class="form-group">
-                <label for="phone_number">Τηλέφωνο:</label>
-                <input type="text" class="form-control" id="phone_number" name="Phone" pattern="[0-9]{10}" value="@Model.Phone" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" required>
-            </div>
+        <div class="form-group">
+            <label for="phone_number">Τηλέφωνο:</label>
+            <input type="text" class="form-control" id="phone_number" name="Phone" pattern="[0-9]{10}" value="@Model.Phone" readonly>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" readonly>
+        </div>
             <div class="form-group">
                 <label for="town">Περιοχή Κατοικίας:</label>
                 <input type="text" class="form-control" id="town" name="AreaOfResidence" value="@Model.AreaOfResidence" required>

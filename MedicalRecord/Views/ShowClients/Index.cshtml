@@ -209,8 +209,11 @@
                     var idCell = cells[0].textContent.toLowerCase();
                     var firstNameCell = cells[1].textContent.toLowerCase();
                     var lastNameCell = cells[2].textContent.toLowerCase();
+                    var amkaCell = cells[6].textContent.toLowerCase();
+                    var phoneCell = cells[10].textContent.toLowerCase();
 
-                    var matchFound = idCell.includes(searchValue) || firstNameCell.includes(searchValue) || lastNameCell.includes(searchValue);
+
+                    var matchFound = idCell.includes(searchValue) || firstNameCell.includes(searchValue) || lastNameCell.includes(searchValue) || amkaCell.includes(searchValue) || phoneCell.includes(searchValue);
                     rows[i].style.display = matchFound ? "table-row" : "none";
                 }
             });
