@@ -120,7 +120,6 @@ namespace MedicalRecord.Controllers
                     if (await SendPasswordResetEmailAsync(resetRequest.Email, resetToken))
                     {
                         TempData["ResetSuccessMessage"] = "Το email για επαναφορά του κωδικού στάλθηκε επιτυχώς.";
-                        return RedirectToAction("Index");
                     }
                     else
                     {
@@ -132,13 +131,10 @@ namespace MedicalRecord.Controllers
                     TempData["ResetFailureMessage"] = "Σφάλμα κατά την αποθήκευση του token.";
                 }
             }
-            else
-            {
-                TempData["ResetFailureMessage"] = "Το email δεν υπάρχει.";
-            }
 
             return RedirectToAction("Index");
         }
+
 
 
         private bool EmailExistsInDatabase(string email)
@@ -293,5 +289,39 @@ namespace MedicalRecord.Controllers
                 return false;
             }
         }
+        [HttpPost]
+        public IActionResult CheckEmailExists(string email)
+        {
+            bool emailExists = EmailExists(email);
+            return Json(new { exists = emailExists });
+        }
+
+        private bool EmailExists(string email)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string checkEmailQuery = "SELECT COUNT(*) FROM doctors WHERE email=@Email";
+                    using (SqlCommand command = new SqlCommand(checkEmailQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@Email", email);
+
+                        int count = (int)command.ExecuteScalar();
+
+                        // Return true if the email exists (count > 0)
+                        return count > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking email existence: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

@@ -34,8 +34,8 @@ namespace MedicalRecord.Controllers
                     }
                 }
 
-                string insertQuery = "INSERT INTO clients (firstName, lastName, fathersName, gender, dob, amka, job, insurance, familyStatus, phone, email, areaOfResidence, cityOfResidence, addressOfResidence, zipCodeOfResidence, VisitDateTime) " +
-                                    "VALUES (@FirstName, @LastName, @FatherName, @Gender, @Dob, @Amka, @Job, @Insurance, @FamilyStatus, @Phone, @Email, @AreaOfResidence, @CityOfResidence, @AddressOfResidence, @ZipCodeOfResidence, GETDATE())";
+                string insertQuery = "INSERT INTO clients (firstName, lastName, fathersName, gender, dob, amka, job, insurance, familyStatus, phone, email, areaOfResidence, cityOfResidence, addressOfResidence, zipCodeOfResidence) " +
+                                    "VALUES (@FirstName, @LastName, @FatherName, @Gender, @Dob, @Amka, @Job, @Insurance, @FamilyStatus, @Phone, @Email, @AreaOfResidence, @CityOfResidence, @AddressOfResidence, @ZipCodeOfResidence)";
                 using (SqlCommand command = new SqlCommand(insertQuery, connection))
                 {
                     command.Parameters.AddWithValue("@FirstName", client.FirstName);

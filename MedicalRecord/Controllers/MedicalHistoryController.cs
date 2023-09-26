@@ -38,11 +38,9 @@ namespace MedicalRecord.Controllers
                     {
                         if (reader.Read())
                         {
-                            // Map client properties (e.g., FirstName, LastName, etc.)
                             client.Id = (int)reader["id"];
                             client.FirstName = reader["firstName"].ToString();
                             client.LastName = reader["lastName"].ToString();
-                            // Map other client properties here
                         }
                     }
                 }

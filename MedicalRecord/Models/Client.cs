@@ -73,22 +73,6 @@ public partial class Client
     [StringLength(150)]
     public string ZipCodeOfResidence { get; set; }
 
-    // Medical History Fields
-    [Column("vaccines")]
-    [StringLength(500)] // Adjust the length as needed
-    public string Vaccines { get; set; }
-
-    [Column("diagnosis")]
-    [StringLength(500)] // Adjust the length as needed
-    public string Diagnosis { get; set; }
-
-    [Column("treatment")]
-    [StringLength(500)] // Adjust the length as needed
-    public string Treatment { get; set; }
-
-    [Column("visitDateTime")]
-    public DateTime VisitDateTime { get; set; }
-
     public List<MedicalHistoryEntry> MedicalHistoryEntries { get; set; }
 
 }
